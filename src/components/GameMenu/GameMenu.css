@@ -1,0 +1,145 @@
+/* Container Principal do Jogo */
+.game-container {
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    animation: glitch-flicker 8s infinite alternate;
+}
+
+/* Título com Gradiente e Brilho */
+.game-title {
+    font-size: 2rem;
+    text-align: center;
+    background: linear-gradient(90deg, #f0f, #0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    text-shadow: 
+        0 0 5px rgba(255, 0, 255, 0.8), 
+        0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+/* Campo de Inserir Nome */
+.name-input {
+    width: 100%;
+    padding: 1rem;
+    background-color: transparent;
+    border: 2px solid #0ff;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+.name-input::placeholder {
+    color: #0ff;
+    opacity: 0.6;
+}
+
+.name-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+}
+
+/* Seção de botões */
+.options-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+/* Estilo base para todos os botões */
+.btn {
+    padding: 1rem 0.5rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: 2px solid;
+}
+
+/* Variações de cor dos botões */
+.btn-magenta {
+    border-color: #f0f;
+    color: #f0f;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.btn-cyan {
+    border-color: #0ff;
+    color: #0ff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+.btn-yellow {
+    border-color: #ff0;
+    color: #ff0;
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.7);
+    box-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+}
+
+/* Botões de Tema (quadrados com ícone) */
+.theme-btn {
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Botão principal de Jogar */
+.play-btn {
+    grid-column: 1 / -1;
+    font-size: 1.2rem;
+    padding: 1.2rem;
+}
+
+/* Efeito Hover e Focus (quando selecionado) */
+.btn:hover, .btn:focus {
+    color: #000;
+    outline: none;
+}
+
+.btn-magenta:hover, .btn-magenta:focus { background-color: #f0f; }
+.btn-cyan:hover, .btn-cyan:focus { background-color: #0ff; }
+.btn-yellow:hover, .btn-yellow:focus { background-color: #ff0; }
+
+/* Animação de Glitch */
+@keyframes glitch-flicker {
+    0%, 100% { transform: translate(0, 0); opacity: 1; }
+    20% { transform: translate(-2px, 2px); }
+    20.1% { transform: translate(2px, -2px); opacity: 0.8; }
+    40% { transform: translate(-2px, -2px); }
+    40.1% { transform: translate(2px, 2px); opacity: 1; }
+    60% { transform: translate(2px, -2px); }
+    60.1% { transform: translate(-2px, 2px); opacity: 0.9; }
+    80% { transform: translate(0, 0); }
+}
+
+/* Adicione este código ao final de GameMenu.css */
+
+/* Estilo para o botão ATIVO (selecionado) */
+.btn.active {
+    color: #000;
+}
+
+.btn-magenta.active {
+    background-color: #f0f;
+}
+
+.btn-cyan.active {
+    background-color: #0ff;
+}
+
+.btn-yellow.active {
+    background-color: #ff0;
+}

@@ -1,0 +1,48 @@
+.game-board-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.board-title {
+  font-size: 2.5rem;
+  color: #FFFF00;
+  text-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+  margin-bottom: 30px;
+}
+
+/* VOLTAMOS PARA O CSS GRID */
+.game-board {
+  display: grid;
+  gap: 12px;
+  /* Centraliza a grade dentro do container */
+  justify-content: center;
+}
+
+.btn-back {
+  margin-top: 30px;
+  padding: 1rem 2rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  text-transform: uppercase;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid #FFFF00;
+  color: #FFFF00;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.7);
+  box-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+}
+
+.btn-back:hover {
+  background-color: #FFFF00;
+  color: #000;
+}

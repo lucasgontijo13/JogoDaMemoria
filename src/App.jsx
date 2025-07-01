@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import GameMenu from './components/GameMenu/GameMenu';
+import GameBoard from './components/GameBoard/GameBoard';
+import './App.css'; 
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [gameState, setGameState] = useState('menu'); // 'menu' ou 'playing'
+  const [difficulty, setDifficulty] = useState('Fácil');
+  // const [theme, setTheme] = useState('PETS'); // Podemos usar o tema depois
+
+  // Função para iniciar o jogo, que será passada para o GameMenu
+  const startGame = (selectedDifficulty, selectedTheme) => {
+    setDifficulty(selectedDifficulty);
+    // setTheme(selectedTheme);
+    setGameState('playing');
+  };
+
+  // Função para voltar ao menu
+  const backToMenu = () => {
+    setGameState('menu');
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      {/* Renderização condicional: mostra uma tela ou outra */}
+      {gameState === 'menu' ? (
+        <GameMenu onStartGame={startGame} />
+      ) : (
+        <GameBoard difficulty={difficulty} onBackToMenu={backToMenu} />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
