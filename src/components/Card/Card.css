@@ -1,0 +1,21 @@
+.card {
+  /* Tamanho único e otimizado para caber em todas as grades */
+  width: 65px;
+  height: 65px;
+  
+  /* Estilos visuais que você já tinha */
+  background-color: #1B263B;
+  border: 2px solid #00FFFF;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+}
