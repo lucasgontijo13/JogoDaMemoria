@@ -1,32 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GameMenu from './components/GameMenu/GameMenu';
 import GameBoard from './components/GameBoard/GameBoard';
+import GameInfoBar from './components/GameInfoBar/GameInfoBar';
 import './App.css'; 
 
 function App() {
-  const [gameState, setGameState] = useState('menu'); // 'menu' ou 'playing'
+  const [gameState, setGameState] = useState('menu');
+  
+  // Os estados do jogo agora são a única fonte da verdade
   const [difficulty, setDifficulty] = useState('Fácil');
-  // const [theme, setTheme] = useState('PETS'); // Podemos usar o tema depois
+  const [theme, setTheme] = useState('ANIMAL');
+  const [playerName, setPlayerName] = useState('');
+  
+  const [moveCount, setMoveCount] = useState(0);
+  const [points, setPoints] = useState(0);
+  const [timer, setTimer] = useState(0);
 
-  // Função para iniciar o jogo, que será passada para o GameMenu
-  const startGame = (selectedDifficulty, selectedTheme) => {
-    setDifficulty(selectedDifficulty);
-    // setTheme(selectedTheme);
+  useEffect(() => {
+    let intervalId;
+    if (gameState === 'playing') {
+      intervalId = setInterval(() => {
+        setTimer(prevTimer => prevTimer + 1);
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [gameState]);
+
+  // A função startGame agora não precisa de parâmetros, pois o App já conhece os estados
+  const startGame = () => {
+    // A lógica de 'ANONIMO' é movida para cá
+    if (playerName.trim() === '') {
+      setPlayerName('ANONIMO');
+    }
+    setMoveCount(0);
+    setPoints(0);
+    setTimer(0);
     setGameState('playing');
   };
 
-  // Função para voltar ao menu
   const backToMenu = () => {
     setGameState('menu');
   };
 
   return (
     <div className="App">
-      {/* Renderização condicional: mostra uma tela ou outra */}
       {gameState === 'menu' ? (
-        <GameMenu onStartGame={startGame} />
+        <GameMenu 
+          // Passa todos os valores e as funções de atualização para o Menu
+          playerName={playerName}
+          setPlayerName={setPlayerName}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          theme={theme}
+          setTheme={setTheme}
+          onStartGame={startGame} 
+        />
       ) : (
-        <GameBoard difficulty={difficulty} onBackToMenu={backToMenu} />
+        <>
+          <GameInfoBar
+            playerName={playerName}
+            moveCount={moveCount}
+            timer={timer}
+            points={points}
+          />
+          <GameBoard
+            difficulty={difficulty}
+            theme={theme}
+            onBackToMenu={backToMenu}
+            setMoveCount={setMoveCount}
+            setPoints={setPoints}
+          />
+        </>
       )}
     </div>
   );

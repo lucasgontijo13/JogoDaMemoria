@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Card from '../Card/Card';
 import './GameBoard.css';
 
-const PET_SYMBOLS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊'];
+// A importação do GameInfoBar FOI REMOVIDA daqui
+
+const THEME_IMAGES = {
+  ANIMAL: Array.from({ length: 25 }, (_, i) => `/images/animal/animal (${i + 1}).png`),
+  EMOJI: Array.from({ length: 25 }, (_, i) => `/images/emoji/emoji (${i + 1}).png`),
+  SUPERHEROI: Array.from({ length: 25 }, (_, i) => `/images/superheroi/heroi (${i + 1}).png`),
+};
 
 const getGridConfig = (difficulty) => {
     switch (difficulty) {
@@ -17,81 +23,64 @@ const getGridConfig = (difficulty) => {
     }
 };
 
-function GameBoard({ difficulty, onBackToMenu }) {
+// Este componente não precisa mais saber sobre pontos ou jogadas, apenas avisar o App
+function GameBoard({ difficulty, theme, onBackToMenu, setMoveCount, setPoints }) {
   const [cards, setCards] = useState([]);
   const [flippedIndexes, setFlippedIndexes] = useState([]);
   const [isChecking, setIsChecking] = useState(false);
-  
+
   const config = getGridConfig(difficulty);
 
   useEffect(() => {
-    const neededSymbols = config.cardCount / 2;
-    const symbolsForGame = PET_SYMBOLS.slice(0, neededSymbols);
-    const cardPairs = [...symbolsForGame, ...symbolsForGame];
-
-    for (let i = cardPairs.length - 1; i > 0; i--) {
+    const imageArray = THEME_IMAGES[theme] || THEME_IMAGES.ANIMAL;
+    const neededPairs = config.cardCount / 2;
+    const imagesForGame = imageArray.slice(0, neededPairs);
+    const cardImages = [...imagesForGame, ...imagesForGame];
+    for (let i = cardImages.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [cardPairs[i], cardPairs[j]] = [cardPairs[j], cardPairs[i]];
+      [cardImages[i], cardImages[j]] = [cardImages[j], cardImages[i]];
     }
-
-    const initialCards = cardPairs.map((symbol, index) => ({
-      id: index,
-      symbol: symbol,
-      isFlipped: false,
-      isMatched: false,
-    }));
+    const initialCards = cardImages.map((image, index) => ({ id: index, image, isFlipped: false, isMatched: false }));
     setCards(initialCards);
-    setFlippedIndexes([]); // Reseta as cartas viradas ao criar um novo jogo
-  }, [difficulty, config.cardCount]);
+  }, [difficulty, theme, config.cardCount]);
 
   useEffect(() => {
-    if (flippedIndexes.length === 2) {
-      setIsChecking(true);
-      const [firstIndex, secondIndex] = flippedIndexes;
-      
-      if (cards[firstIndex].symbol === cards[secondIndex].symbol) {
-        setCards(prevCards =>
-          prevCards.map(card =>
-            card.symbol === cards[firstIndex].symbol ? { ...card, isMatched: true, isFlipped: true } : card
-          )
-        );
+    if (flippedIndexes.length !== 2) return;
+    setMoveCount(prev => prev + 1);
+    setIsChecking(true);
+    const [firstIndex, secondIndex] = flippedIndexes;
+    const firstCard = cards[firstIndex];
+    const secondCard = cards[secondIndex];
+    if (firstCard.image === secondCard.image) {
+      setPoints(prev => prev + 1);
+      setCards(prev => prev.map(card => card.image === firstCard.image ? { ...card, isMatched: true } : card));
+      setFlippedIndexes([]);
+      setIsChecking(false);
+    } else {
+      setTimeout(() => {
+        setCards(prev => prev.map((card, index) => index === firstIndex || index === secondIndex ? { ...card, isFlipped: false } : card));
         setFlippedIndexes([]);
         setIsChecking(false);
-      } else {
-        setTimeout(() => {
-          setCards(prevCards =>
-            prevCards.map((card, index) =>
-              index === firstIndex || index === secondIndex ? { ...card, isFlipped: false } : card
-            )
-          );
-          setFlippedIndexes([]);
-          setIsChecking(false);
-        }, 1000);
-      }
+      }, 700);
     }
-  }, [flippedIndexes, cards]);
+  }, [flippedIndexes, cards, setMoveCount, setPoints]);
 
   const handleCardClick = (index) => {
-    if (isChecking || flippedIndexes.includes(index) || cards[index].isMatched) {
-      return;
-    }
-    
-    setCards(prevCards =>
-      prevCards.map((card, i) => (i === index ? { ...card, isFlipped: true } : card))
-    );
-    setFlippedIndexes([...flippedIndexes, index]);
+    const card = cards[index];
+    if (isChecking || card.isFlipped || card.isMatched) return;
+    setCards(prev => prev.map((c, i) => i === index ? { ...c, isFlipped: true } : c));
+    setFlippedIndexes(prev => [...prev, index]);
   };
 
+  // ✨ O RETURN AGORA É APENAS O TABULEIRO, SEM A BARRA DE INFORMAÇÕES ✨
   return (
     <div className="game-board-container">
-      <h1 className="board-title">{difficulty.toUpperCase()}</h1>
       <div className="game-board" style={{ gridTemplateColumns: `repeat(${config.columns}, 1fr)` }}>
         {cards.map((card, index) => (
           <Card
             key={card.id}
             card={card}
-            index={index}
-            onCardClick={handleCardClick}
+            onCardClick={() => handleCardClick(index)}
           />
         ))}
       </div>

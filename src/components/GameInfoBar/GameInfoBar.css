@@ -1,0 +1,47 @@
+.game-info-bar {
+  width: 100%;
+  display: flex;
+  
+  /* ✨ MUDANÇA PRINCIPAL: Itens agora são empilhados verticalmente ✨ */
+  flex-direction: column;
+  align-items: center; /* Centraliza os itens empilhados horizontalmente */
+  gap: 15px; /* Espaço entre a linha do nome e a linha das estatísticas */
+
+  padding: 15px 20px;
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #FF00FF;
+  box-shadow: 0 4px 10px -5px rgba(255, 0, 255, 0.7);
+}
+
+.player-name {
+  font-size: 1rem; /* Pode aumentar um pouco o nome agora que ele tem sua própria linha */
+  text-align: center;
+}
+
+.game-stats {
+  display: flex;
+  /* Garante que em telas muito pequenas, as estatísticas também possam quebrar a linha */
+  flex-wrap: wrap; 
+  justify-content: center; /* Centraliza o grupo de estatísticas */
+  gap: 25px;
+  /* A margem automática não é mais necessária */
+}
+
+.stats-item {
+  font-size: 0.9rem;
+}
+
+.info-label {
+  color: #00FFFF;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.6);
+  margin-right: 8px;
+}
+
+.info-value {
+  color: #FFFF00;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.8);
+}
+
+/* A Media Query não é mais necessária, pois este layout já é responsivo por padrão */

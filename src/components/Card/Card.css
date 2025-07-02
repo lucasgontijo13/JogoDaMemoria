@@ -1,21 +1,55 @@
-.card {
-  /* Tamanho único e otimizado para caber em todas as grades */
-  width: 65px;
-  height: 65px;
-  
-  /* Estilos visuais que você já tinha */
-  background-color: #1B263B;
-  border: 2px solid #00FFFF;
-  border-radius: 5px;
+/* O container define o tamanho e a perspectiva 3D */
+.card-container {
+  width: 75px;  /* Ajustei um pouco o tamanho para caber melhor */
+  height: 75px;
+  perspective: 1000px;
   cursor: pointer;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+/* O elemento que de fato vai girar */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* Esta classe é adicionada via React para ativar a animação */
+.card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* Estilos comuns para as duas faces da carta */
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Para navegadores Webkit */
+  backface-visibility: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 5px;
 }
 
-.card:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 1);
+/* VERSO DA CARTA:  */
+.card-face.card-back {
+  background-color: #1B263B;
+  border: 2px solid #00FFFF;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+  transform: rotateY(0deg); /* Começa virado para o jogador */
+}
+
+/* FRENTE DA CARTA: Um fundo claro para a imagem se destacar */
+.card-face.card-front {
+  background-color: #FFFF00; 
+  transform: rotateY(180deg);
+}
+
+/* Garante que a imagem dentro da carta se ajuste bem */
+.card-face.card-front img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
 }

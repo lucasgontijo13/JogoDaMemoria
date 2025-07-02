@@ -1,49 +1,49 @@
-import React, { useState } from 'react';
+import React from 'react'; // O useState não é mais necessário aqui
 import './GameMenu.css';
 
-/**
- * Componente do Menu Principal do Jogo.
- * @param {object} props - Propriedades do componente.
- * @param {function} props.onStartGame - Função a ser chamada quando o jogo deve começar.
- */
-function GameMenu({ onStartGame }) {
-  // Estado para armazenar a dificuldade selecionada. Padrão: 'Fácil'
-  const [difficulty, setDifficulty] = useState('Fácil');
-  
-  // Estado para armazenar o tema selecionado. Padrão: 'PETS'
-  const [theme, setTheme] = useState('PETS');
+// 1. Recebe todos os valores e funções como props
+function GameMenu({ 
+  playerName, 
+  setPlayerName, 
+  difficulty, 
+  setDifficulty, 
+  theme, 
+  setTheme, 
+  onStartGame 
+}) {
 
-  // Função chamada quando o botão "Jogar" é clicado
+  // 2. Todos os useStates foram REMOVIDOS daqui
+
   const handlePlay = () => {
-    // Chama a função passada pelo componente pai (App.jsx)
-    // com os valores atuais de dificuldade e tema.
-    onStartGame(difficulty, theme);
+    // 3. Apenas chama a função onStartGame, sem passar parâmetros
+    onStartGame();
   };
 
   return (
     <div className="game-container">
       <h1 className="game-title">Jogo da Memória</h1>
-
-      {/* Este input não está sendo usado na lógica ainda, mas faz parte do layout */}
-      <input type="text" className="name-input" placeholder="DIGITE SEU NOME" />
-
+      <input
+        type="text"
+        className="name-input"
+        placeholder="DIGITE SEU NOME"
+        // 4. O input é controlado pelas props do App
+        value={playerName}
+        onChange={(e) => setPlayerName(e.target.value)}
+      />
       <div className="options-grid">
-        {/* === SELEÇÃO DE DIFICULDADE === */}
+        {/* Dificuldade: usa as props 'difficulty' e 'setDifficulty' */}
         <button
           onClick={() => setDifficulty('Fácil')}
-          // A classe 'active' é adicionada se a dificuldade atual for 'Fácil'
           className={`btn btn-magenta ${difficulty === 'Fácil' ? 'active' : ''}`}
         >
           Fácil
         </button>
-
         <button
           onClick={() => setDifficulty('Médio')}
           className={`btn btn-cyan ${difficulty === 'Médio' ? 'active' : ''}`}
         >
           Médio
         </button>
-
         <button
           onClick={() => setDifficulty('Difícil')}
           className={`btn btn-yellow ${difficulty === 'Difícil' ? 'active' : ''}`}
@@ -51,30 +51,26 @@ function GameMenu({ onStartGame }) {
           Difícil
         </button>
         
-        {/* === SELEÇÃO DE TEMAS === */}
+        {/* Temas: usa as props 'theme' e 'setTheme' */}
         <button
-          onClick={() => setTheme('PETS')}
-          // A classe 'active' é adicionada se o tema atual for 'PETS'
-          className={`btn theme-btn btn-magenta ${theme === 'PETS' ? 'active' : ''}`}
+          onClick={() => setTheme('ANIMAL')}
+          className={`btn theme-btn btn-magenta ${theme === 'ANIMAL' ? 'active' : ''}`}
         >
-          PETS
+          ANIMAL
         </button>
-
         <button
-          onClick={() => setTheme('ALIENS')}
-          className={`btn theme-btn btn-cyan ${theme === 'ALIENS' ? 'active' : ''}`}
+          onClick={() => setTheme('EMOJI')}
+          className={`btn theme-btn btn-cyan ${theme === 'EMOJI' ? 'active' : ''}`}
         >
-          ALIENS
+          EMOJI
         </button>
-
         <button
-          onClick={() => setTheme('DEVS')}
-          className={`btn theme-btn btn-yellow ${theme === 'DEVS' ? 'active' : ''}`}
+          onClick={() => setTheme('SUPERHEROI')}
+          className={`btn theme-btn btn-yellow ${theme === 'SUPERHEROI' ? 'active' : ''}`}
         >
-          DEVS
+          SUPERHEROI
         </button>
         
-        {/* === BOTÃO DE INICIAR O JOGO === */}
         <button onClick={handlePlay} className="btn play-btn btn-yellow">
           Jogar
         </button>
