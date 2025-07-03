@@ -12,11 +12,11 @@ const THEME_IMAGES = {
 
 const getGridConfig = (difficulty) => {
     switch (difficulty) {
-      case 'Fácil':
+      case 'Facil':
         return { cardCount: 24, columns: 8 };
-      case 'Médio':
+      case 'Medio':
         return { cardCount: 36, columns: 9 };
-      case 'Difícil':
+      case 'Dificil':
         return { cardCount: 50, columns: 10 };
       default:
         return { cardCount: 24, columns: 8 };
