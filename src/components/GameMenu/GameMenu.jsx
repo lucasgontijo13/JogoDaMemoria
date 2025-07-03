@@ -33,22 +33,22 @@ function GameMenu({
       <div className="options-grid">
         {/* Dificuldade: usa as props 'difficulty' e 'setDifficulty' */}
         <button
-          onClick={() => setDifficulty('Fácil')}
-          className={`btn btn-magenta ${difficulty === 'Fácil' ? 'active' : ''}`}
+          onClick={() => setDifficulty('Facil')}
+          className={`btn btn-magenta ${difficulty === 'Facil' ? 'active' : ''}`}
         >
-          Fácil
+          Facil
         </button>
         <button
-          onClick={() => setDifficulty('Médio')}
-          className={`btn btn-cyan ${difficulty === 'Médio' ? 'active' : ''}`}
+          onClick={() => setDifficulty('Medio')}
+          className={`btn btn-cyan ${difficulty === 'Medio' ? 'active' : ''}`}
         >
-          Médio
+          Medio
         </button>
         <button
-          onClick={() => setDifficulty('Difícil')}
-          className={`btn btn-yellow ${difficulty === 'Difícil' ? 'active' : ''}`}
+          onClick={() => setDifficulty('Dificil')}
+          className={`btn btn-yellow ${difficulty === 'Dificil' ? 'active' : ''}`}
         >
-          Difícil
+          Dificil
         </button>
         
         {/* Temas: usa as props 'theme' e 'setTheme' */}
