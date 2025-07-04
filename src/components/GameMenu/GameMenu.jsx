@@ -1,4 +1,4 @@
-import React from 'react'; // O useState não é mais necessário aqui
+import React from 'react'; 
 import './GameMenu.css';
 
 // 1. Recebe todos os valores e funções como props

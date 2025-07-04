@@ -8,7 +8,7 @@ function App() {
   const [gameState, setGameState] = useState('menu');
   
   // Os estados do jogo agora são a única fonte da verdade
-  const [difficulty, setDifficulty] = useState('Fácil');
+  const [difficulty, setDifficulty] = useState('Facil');
   const [theme, setTheme] = useState('ANIMAL');
   const [playerName, setPlayerName] = useState('');
   
