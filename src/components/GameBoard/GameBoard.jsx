@@ -3,11 +3,11 @@ import Card from '../Card/Card';
 import './GameBoard.css';
 
 // A importação do GameInfoBar FOI REMOVIDA daqui
-
+const BASE_URL = import.meta.env.BASE_URL;
 const THEME_IMAGES = {
-  ANIMAL: Array.from({ length: 25 }, (_, i) => `/images/animal/animal (${i + 1}).png`),
-  EMOJI: Array.from({ length: 25 }, (_, i) => `/images/emoji/emoji (${i + 1}).png`),
-  SUPERHEROI: Array.from({ length: 25 }, (_, i) => `/images/superheroi/heroi (${i + 1}).png`),
+  ANIMAL: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/animal/animal (${i + 1}).png`),
+  EMOJI: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/emoji/emoji (${i + 1}).png`),
+  SUPERHEROI: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/superheroi/heroi (${i + 1}).png`),
 };
 
 const getGridConfig = (difficulty) => {
