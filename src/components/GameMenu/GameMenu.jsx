@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React from 'react'; // O useState não é mais necessário aqui
 import './GameMenu.css';
 
 // 1. Recebe todos os valores e funções como props
@@ -68,7 +68,7 @@ function GameMenu({
           onClick={() => setTheme('SUPERHEROI')}
           className={`btn theme-btn btn-yellow ${theme === 'SUPERHEROI' ? 'active' : ''}`}
         >
-          SUPERHEROI
+          HEROI
         </button>
         
         <button onClick={handlePlay} className="btn play-btn btn-yellow">

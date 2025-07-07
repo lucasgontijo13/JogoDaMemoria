@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Card from '../Card/Card';
 import './GameBoard.css';
 
-// A importação do GameInfoBar FOI REMOVIDA daqui
 const BASE_URL = import.meta.env.BASE_URL;
 const THEME_IMAGES = {
   ANIMAL: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/animal/animal (${i + 1}).png`),
@@ -23,76 +22,90 @@ const getGridConfig = (difficulty) => {
     }
 };
 
-function GameBoard({ difficulty, theme, onBackToMenu, setMoveCount, setPoints }) {
+function GameBoard({ difficulty, theme, onBackToMenu, setMoveCount, setPoints, onGameOver }) {
   const [cards, setCards] = useState([]);
   const [flippedIndexes, setFlippedIndexes] = useState([]);
   const [isChecking, setIsChecking] = useState(false);
-  
+  const [isInitialReveal, setIsInitialReveal] = useState(true); // Novo estado para controlar a exibição inicial
+
   const config = getGridConfig(difficulty);
 
-  // Efeito para criar o baralho e fazer a pré-visualização
+  // Efeito para criar e exibir as cartas no início
   useEffect(() => {
     const imageArray = THEME_IMAGES[theme] || THEME_IMAGES.ANIMAL;
     const neededPairs = config.cardCount / 2;
     const imagesForGame = imageArray.slice(0, neededPairs);
     const cardImages = [...imagesForGame, ...imagesForGame];
-
     for (let i = cardImages.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [cardImages[i], cardImages[j]] = [cardImages[j], cardImages[i]];
     }
-
-    // ✨ 1. CRIA AS CARTAS JÁ VIRADAS PARA CIMA ✨
-    const initialCards = cardImages.map((image, index) => ({
-      id: index,
-      image: image,
-      isFlipped: true, // Começam viradas
-      isMatched: false,
-    }));
     
+    // ✨ MUDANÇA: Inicia todas as cartas como viradas (isFlipped: true)
+    const initialCards = cardImages.map((image, index) => ({ id: index, image, isFlipped: true, isMatched: false }));
     setCards(initialCards);
+    setIsInitialReveal(true);
 
-    // ✨ 2. BLOQUEIA OS CLIQUES DURANTE A PRÉ-VISUALIZAÇÃO ✨
-    setIsChecking(true);
-
-    // ✨ 3. AGENDA PARA ESCONDER AS CARTAS DEPOIS DE 0.5 SEGUNDOS ✨
-    const hideTimeout = setTimeout(() => {
+    // ✨ MUDANÇA: Temporizador para desvirar as cartas após 0.5 segundos
+    const revealTimeout = setTimeout(() => {
       setCards(prev => prev.map(card => ({ ...card, isFlipped: false })));
-      setIsChecking(false); // Libera os cliques
-    }, 500); // 500ms = 0.5 segundos
+      setIsInitialReveal(false); // Termina a exibição inicial
+    }, 500); // 500ms = 0,5 segundos
 
-    // Função de limpeza para evitar erros caso o jogador saia da tela durante o timeout
-    return () => clearTimeout(hideTimeout);
-
+    // Limpa o temporizador se o componente for desmontado
+    return () => clearTimeout(revealTimeout);
   }, [difficulty, theme, config.cardCount]);
 
-  // O useEffect de verificação de pares continua o mesmo
   useEffect(() => {
-    if (flippedIndexes.length !== 2) return;
-
-    setMoveCount(prev => prev + 1);
-    setIsChecking(true);
-    const [firstIndex, secondIndex] = flippedIndexes;
-    const firstCard = cards[firstIndex];
-    const secondCard = cards[secondIndex];
-
-    if (firstCard.image === secondCard.image) {
-      setPoints(prev => prev + 1);
-      setCards(prev => prev.map(card => card.image === firstCard.image ? { ...card, isMatched: true } : card));
-      setFlippedIndexes([]);
-      setIsChecking(false);
-    } else {
+    if (cards.length > 0 && cards.every(card => card.isMatched)) {
       setTimeout(() => {
-        setCards(prev => prev.map((card, index) => index === firstIndex || index === secondIndex ? { ...card, isFlipped: false } : card));
+        onGameOver();
+      }, 1200);
+      return;
+    }
+
+    if (flippedIndexes.length === 2 && !isChecking) {
+      setMoveCount(prev => prev + 1);
+      setIsChecking(true);
+      
+      const [firstIndex, secondIndex] = flippedIndexes;
+      const firstCard = cards[firstIndex];
+      const secondCard = cards[secondIndex];
+
+      if (firstCard.image === secondCard.image) {
+        setPoints(prev => prev + 1);
+        setCards(prev => prev.map(card => 
+          card.image === firstCard.image 
+          ? { ...card, isMatched: true, isNewlyMatched: true } 
+          : card
+        ));
+        
+        setTimeout(() => {
+          setCards(prev => prev.map(card => 
+            card.isNewlyMatched ? { ...card, isNewlyMatched: false } : card
+          ));
+        }, 1000);
+
         setFlippedIndexes([]);
         setIsChecking(false);
-      }, 700);
+
+      } else {
+        setTimeout(() => {
+          setCards(prev => prev.map((card, index) => 
+            (index === firstIndex || index === secondIndex) 
+            ? { ...card, isFlipped: false } 
+            : card
+          ));
+          setFlippedIndexes([]);
+          setIsChecking(false);
+        }, 500);
+      }
     }
-  }, [flippedIndexes, cards, setMoveCount, setPoints]);
+  }, [flippedIndexes, cards, isChecking, setMoveCount, setPoints, onGameOver]);
 
   const handleCardClick = (index) => {
-    const card = cards[index];
-    if (isChecking || card.isFlipped || card.isMatched) {
+    // ✨ MUDANÇA: Impede o clique durante a exibição inicial
+    if (isInitialReveal || isChecking || cards[index].isFlipped || cards[index].isMatched) {
       return;
     }
     setCards(prev => prev.map((c, i) => i === index ? { ...c, isFlipped: true } : c));

@@ -1,0 +1,111 @@
+.game-over-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  border: 2px solid #0ff;
+  border-radius: 10px;
+  background-color: rgba(17, 24, 39, 0.8);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.game-over-title {
+  font-size: 3rem;
+  color: #ff0;
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+}
+
+.player-name-congrats {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.highlight {
+  color: #ff0;
+  font-weight: bold;
+}
+
+.stats-summary {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1B263B;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #f0f;
+  min-width: 120px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #f0f;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+}
+
+.game-over-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Reusing button styles from GameMenu.css for consistency */
+.btn {
+  padding: 1rem 1.5rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid;
+}
+
+.btn-magenta {
+  border-color: #f0f;
+  color: #f0f;
+  text-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.btn-cyan {
+  border-color: #0ff;
+  color: #0ff;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+.btn:hover {
+  color: #000;
+}
+
+.btn-magenta:hover { background-color: #f0f; }
+.btn-cyan:hover { background-color: #0ff; }

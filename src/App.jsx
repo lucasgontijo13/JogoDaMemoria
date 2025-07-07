@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GameMenu from './components/GameMenu/GameMenu';
 import GameBoard from './components/GameBoard/GameBoard';
 import GameInfoBar from './components/GameInfoBar/GameInfoBar';
+import GameOverScreen from './components/GameOverScreen/GameOverScreen';
 import './App.css'; 
 
 function App() {
@@ -42,11 +43,19 @@ function App() {
     setGameState('menu');
   };
 
+  const handleGameOver = () => {
+    setGameState('gameOver');
+  }
+
+  const showStats = () => {
+    alert('A tela de estatísticas será implementada em breve!');
+  };
+  
   return (
     <div className="App">
       {gameState === 'menu' ? (
+        // Se o estado for 'menu', mostra o Menu
         <GameMenu 
-          // Passa todos os valores e as funções de atualização para o Menu
           playerName={playerName}
           setPlayerName={setPlayerName}
           difficulty={difficulty}
@@ -55,7 +64,18 @@ function App() {
           setTheme={setTheme}
           onStartGame={startGame} 
         />
+      ) : gameState === 'gameOver' ? (
+        // Se não for 'menu', verifica se é 'gameOver'. Se for, mostra a tela de Vitória
+        <GameOverScreen
+          playerName={playerName}
+          points={points}
+          timer={timer}
+          moveCount={moveCount}
+          onBackToMenu={backToMenu}
+          onShowStats={showStats}
+        />
       ) : (
+        // Se não for nem 'menu' nem 'gameOver', então só pode ser 'playing'. Mostra o jogo.
         <>
           <GameInfoBar
             playerName={playerName}
@@ -69,6 +89,7 @@ function App() {
             onBackToMenu={backToMenu}
             setMoveCount={setMoveCount}
             setPoints={setPoints}
+            onGameOver={handleGameOver} // Não se esqueça de passar a prop!
           />
         </>
       )}

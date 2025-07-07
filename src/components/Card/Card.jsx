@@ -9,7 +9,10 @@ function Card({ card, onCardClick }) {
   };
 
   return (
-    <div className="card-container" onClick={handleClick}>
+    <div 
+      className={`card-container ${card.isNewlyMatched ? 'newly-matched' : ''}`} 
+      onClick={handleClick}
+    >
       <div className={`card-inner ${card.isFlipped || card.isMatched ? 'is-flipped' : ''}`}>
         
         {/* VERSO DA CARTA: O design que você gosta */}
