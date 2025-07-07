@@ -7,26 +7,44 @@ const formatTime = (totalSeconds) => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-// Recebe a nova prop 'points'
-function GameInfoBar({ playerName, moveCount, timer, points }) {
+// 1. Recebe as novas props
+function GameInfoBar({ 
+  playerName, 
+  moveCount, 
+  timer, 
+  points, 
+  gameMode, 
+  difficulty, 
+  challengeConfig 
+}) {
+  const isChallenge = gameMode === 'challenge';
+  
+  // 2. Determina o limite de jogadas se estiver no modo desafio
+  const moveLimit = isChallenge ? challengeConfig[difficulty].moveLimit : null;
+
+  // 3. Adiciona uma classe CSS quando o tempo ou as jogadas estiverem baixos
+  const timerClass = isChallenge && timer <= 10 ? 'low-time' : '';
+  const movesClass = isChallenge && moveCount <= 5 ? 'low-moves' : '';
+
   return (
     <div className="game-info-bar">
       <div className="player-name">
-        {/* Separamos o título do dado em spans com classes diferentes */}
         <span className="info-label">JOGADOR: </span>
         <span className="info-value">{playerName || 'ANONIMO'}</span>
       </div>
       <div className="game-stats">
-        {/* Novo item para os pontos */}
         <div className="stats-item">
           <span className="info-label">PONTOS: </span>
           <span className="info-value">{points}</span>
         </div>
-        <div className="stats-item">
+        <div className={`stats-item ${movesClass}`}>
           <span className="info-label">JOGADAS: </span>
-          <span className="info-value">{moveCount}</span>
+          <span className="info-value">
+            {/* 4. Exibe as jogadas de forma diferente para cada modo */}
+            {isChallenge ? `${moveCount}/${moveLimit}` : moveCount}
+          </span>
         </div>
-        <div className="stats-item">
+        <div className={`stats-item ${timerClass}`}>
           <span className="info-label">TEMPO: </span>
           <span className="info-value">{formatTime(timer)}</span>
         </div>

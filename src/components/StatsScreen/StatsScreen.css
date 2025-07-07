@@ -1,0 +1,137 @@
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  width: 95%;
+  max-width: 1000px;
+  border: 2px solid #f0f;
+  border-radius: 10px;
+  background-color: rgba(17, 24, 39, 0.8);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.stats-title {
+  font-size: 2.5rem;
+  color: #0ff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+.stats-table-wrapper {
+  width: 100%;
+  border: 1px solid #0ff;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.7rem;
+  table-layout: fixed;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #f0f;
+  word-wrap: break-word;
+}
+
+.stats-table thead th {
+  background-color: #1B263B;
+  color: #f0f;
+  top: 0;
+}
+
+
+.stats-table tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.stats-table tbody tr:hover {
+  background-color: rgba(255, 0, 255, 0.2);
+}
+
+
+.summary-section, .records-section {
+  width: 100%;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #f0f;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.summary-table-wrapper {
+  max-width: 500px; /* Limita a largura da tabela de resumo */
+  margin: 0 auto;   /* Centraliza a tabela */
+  background-color: #1B263B;
+  border-radius: 8px;
+  border: 1px solid #0ff; /* Adiciona a mesma borda das outras tabelas */
+}
+
+.summary-table td {
+  font-size: 0.9rem;
+  padding: 0.6rem 1.2rem;
+  border-bottom: 1px solid #2c3a52; /* Borda interna sutil */
+}
+
+.summary-table tr:last-child td {
+  border-bottom: none; /* Remove a borda da última linha */
+}
+
+.summary-table td:first-child {
+  color: #0ff;
+  font-weight: bold;
+  text-align: left;
+  width: 40%;
+}
+
+.summary-table td:last-child {
+  text-align: right;
+  color: #fff;
+}
+
+.no-stats-message {
+  font-size: 1.2rem;
+  color: #fff;
+  margin: 2rem 0;
+}
+
+.stats-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 1rem 1.5rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid;
+}
+
+.btn-magenta {
+  border-color: #f0f;
+  color: #f0f;
+}
+
+.btn-yellow {
+  border-color: #ff0;
+  color: #ff0;
+}
+
+.btn:hover {
+  color: #000;
+}
+
+.btn-magenta:hover { background-color: #f0f; }
+.btn-yellow:hover { background-color: #ff0; }

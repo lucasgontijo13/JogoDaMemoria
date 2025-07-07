@@ -1,7 +1,6 @@
 import React from 'react';
 import './GameMenu.css';
 
-// 1. Recebe todos os valores e funções como props
 function GameMenu({ 
   playerName, 
   setPlayerName, 
@@ -9,21 +8,20 @@ function GameMenu({
   setDifficulty, 
   theme, 
   setTheme, 
-  onStartGame 
+  onStartGame,
+  gameMode,
+  setGameMode,
+  onShowStats // 1. Recebe a nova prop
 }) {
 
   const handlePlay = () => {
     onStartGame();
   };
 
-  // Função placeholder para o novo botão
-  const handleStatsClick = () => {
-    alert('A tela de estatísticas será implementada em breve!');
-  };
-
   return (
     <div className="game-container">
       <h1 className="game-title">Jogo da Memória</h1>
+      
       <input
         type="text"
         className="name-input"
@@ -31,8 +29,17 @@ function GameMenu({
         value={playerName}
         onChange={(e) => setPlayerName(e.target.value)}
       />
+
+      {/* 2. Botão de Desafio movido para fora e acima do grid */}
+      <button
+        onClick={() => setGameMode(gameMode === 'classic' ? 'challenge' : 'classic')}
+        className={`btn challenge-btn ${gameMode === 'challenge' ? 'active' : ''}`}
+      >
+        Modo Desafio: {gameMode === 'challenge' ? 'ATIVADO' : 'DESATIVADO'}
+      </button>
+
+      {/* Grid apenas para as opções de dificuldade e tema */}
       <div className="options-grid">
-        {/* Dificuldade: usa as props 'difficulty' e 'setDifficulty' */}
         <button
           onClick={() => setDifficulty('Facil')}
           className={`btn btn-magenta ${difficulty === 'Facil' ? 'active' : ''}`}
@@ -43,7 +50,7 @@ function GameMenu({
           onClick={() => setDifficulty('Medio')}
           className={`btn btn-cyan ${difficulty === 'Medio' ? 'active' : ''}`}
         >
-          Medio
+          Médio
         </button>
         <button
           onClick={() => setDifficulty('Dificil')}
@@ -52,7 +59,6 @@ function GameMenu({
           Dificil
         </button>
         
-        {/* Temas: usa as props 'theme' e 'setTheme' */}
         <button
           onClick={() => setTheme('ANIMAL')}
           className={`btn theme-btn btn-magenta ${theme === 'ANIMAL' ? 'active' : ''}`}
@@ -71,16 +77,17 @@ function GameMenu({
         >
           HEROI
         </button>
-        
-        <button onClick={handlePlay} className="btn play-btn btn-yellow">
-          Jogar
-        </button>
-
-        {/* ✨ BOTÃO DE ESTATÍSTICAS ADICIONADO AQUI ✨ */}
-        <button onClick={handleStatsClick} className="btn play-btn btn-cyan">
-          Estatísticas
-        </button>
       </div>
+      
+      {/* Botões de ação principais abaixo do grid */}
+      <button onClick={handlePlay} className="btn play-btn btn-yellow">
+        Jogar
+      </button>
+
+      {/* 3. Novo botão para Estatísticas */}
+      <button onClick={onShowStats} className="btn stats-btn">
+        Estatisticas
+      </button>
     </div>
   );
 }
