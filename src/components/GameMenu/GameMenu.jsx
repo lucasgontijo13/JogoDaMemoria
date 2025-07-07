@@ -1,4 +1,4 @@
-import React from 'react'; // O useState não é mais necessário aqui
+import React from 'react';
 import './GameMenu.css';
 
 // 1. Recebe todos os valores e funções como props
@@ -12,11 +12,13 @@ function GameMenu({
   onStartGame 
 }) {
 
-  // 2. Todos os useStates foram REMOVIDOS daqui
-
   const handlePlay = () => {
-    // 3. Apenas chama a função onStartGame, sem passar parâmetros
     onStartGame();
+  };
+
+  // Função placeholder para o novo botão
+  const handleStatsClick = () => {
+    alert('A tela de estatísticas será implementada em breve!');
   };
 
   return (
@@ -26,7 +28,6 @@ function GameMenu({
         type="text"
         className="name-input"
         placeholder="DIGITE SEU NOME"
-        // 4. O input é controlado pelas props do App
         value={playerName}
         onChange={(e) => setPlayerName(e.target.value)}
       />
@@ -73,6 +74,11 @@ function GameMenu({
         
         <button onClick={handlePlay} className="btn play-btn btn-yellow">
           Jogar
+        </button>
+
+        {/* ✨ BOTÃO DE ESTATÍSTICAS ADICIONADO AQUI ✨ */}
+        <button onClick={handleStatsClick} className="btn play-btn btn-cyan">
+          Estatísticas
         </button>
       </div>
     </div>
