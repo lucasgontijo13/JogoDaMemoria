@@ -14,6 +14,7 @@ function GameOverScreen({
     moveCount,
     onBackToMenu,
     onShowStats,
+    personalBest
 }) {
     return (
         <div className="game-over-container">
@@ -36,6 +37,14 @@ function GameOverScreen({
                     <span className="stat-value highlight">{moveCount}</span>
                 </div>
             </div>
+            {personalBest &&(
+                <div className="personal-best-section">
+                    <p>Seu recorde pessoal neste modo:</p>
+                    <p>
+                        <span className="highlight">{personalBest.moveCount}</span> Jogadas em <span className="highlight">{formatTime(personalBest.timer)}</span>
+                    </p>
+                </div>
+            )}
 
             <div className="game-over-buttons">
                 <button className="btn btn-magenta" onClick={onBackToMenu}>

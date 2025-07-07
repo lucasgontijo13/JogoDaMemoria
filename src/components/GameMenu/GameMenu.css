@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
     animation: glitch-flicker 8s infinite alternate;
 }
 
@@ -98,9 +98,38 @@
 
 /* Botão principal de Jogar */
 .play-btn {
-    grid-column: 1 / -1;
+    width: 100%;
     font-size: 1.2rem;
     padding: 1.2rem;
+}
+
+.challenge-btn {
+    width: 100%;
+    padding: 1rem;
+    border-color: #00ff00;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+}
+
+.challenge-btn:hover,
+.challenge-btn.active {
+    background-color: #00ff00;
+    color: #000;
+}
+
+.stats-btn {
+    width: 100%;
+    padding: 1rem;
+    border-color: #0ff;
+    color: #0ff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+.stats-btn:hover {
+    background-color: #0ff;
+    color: #000;
 }
 
 /* Efeito Hover e Focus (quando selecionado) */
@@ -143,3 +172,4 @@
 .btn-yellow.active {
     background-color: #ff0;
 }
+
