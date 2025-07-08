@@ -5,8 +5,8 @@
   justify-content: center;
   gap: 2rem;
   padding: 2rem;
-  width: 90%;
-  max-width: 600px;
+  width: 95%;
+  max-width: 700px;
   border: 2px solid #0ff;
   border-radius: 10px;
   background-color: rgba(17, 24, 39, 0.8);
@@ -83,13 +83,13 @@
 
 .game-over-buttons {
   display: flex;
-  justify-content: center; /* Centraliza os botões */
+  justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
-  width: 100%; /* Garante que o container ocupe a largura */
+  width: 100%;
 }
 
-/* Reutilizando estilos de botão do GameMenu.css para consistência */
+/* Regra geral para botões (sem flex-grow) */
 .btn {
   padding: 1rem 1.5rem;
   font-family: 'Press Start 2P', cursive;
@@ -99,6 +99,13 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   border: 2px solid;
+}
+
+/* --- CORREÇÃO APLICADA AQUI --- */
+/* A regra de crescimento agora é específica para os botões dentro da tela de game over */
+.game-over-buttons .btn {
+    flex-grow: 1;
+    max-width: fit-content;
 }
 
 .btn-magenta {
@@ -115,6 +122,18 @@
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
 }
 
+.btn-green {
+    border-color: #00ff00;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+}
+
+.btn-green:hover {
+    background-color: #00ff00;
+    color: #000;
+}
+
 .btn:hover {
   color: #000;
 }
@@ -124,7 +143,7 @@
 
 /* Estilos para a tela de derrota */
 .game-over-container.loss-style .game-over-title {
-    color: #ff0000; /* Vermelho para derrota */
+    color: #ff0000;
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
 }
 

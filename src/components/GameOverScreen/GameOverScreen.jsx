@@ -11,6 +11,7 @@ function GameOverScreen({
     gameResult,
     onBackToMenu,
     onShowStats,
+    onRestart, // Recebe a nova prop
     personalBest,
 }) {
     if (!gameResult) return null;
@@ -58,6 +59,10 @@ function GameOverScreen({
             <div className="game-over-buttons">
                 <button className="btn btn-magenta" onClick={onBackToMenu}>
                     Menu inicial
+                </button>
+                {/* Novo botão para jogar novamente */}
+                <button className="btn btn-green" onClick={onRestart}>
+                    Jogar Novamente
                 </button>
                 <button className="btn btn-cyan" onClick={onShowStats}>
                     Estatisticas

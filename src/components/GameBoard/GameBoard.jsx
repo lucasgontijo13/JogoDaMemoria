@@ -4,7 +4,7 @@ import './GameBoard.css';
 
 const BASE_URL = import.meta.env.BASE_URL;
 const THEME_IMAGES = {
-  ANIMAL: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/animal/animal (${i + 1}).png`),
+  ANIMAL: Array.from({ length: 2 }, (_, i) => `${BASE_URL}/images/animal/animal (${i + 1}).png`),
   EMOJI: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/emoji/emoji (${i + 1}).png`),
   HEROI: Array.from({ length: 25 }, (_, i) => `${BASE_URL}/images/superheroi/heroi (${i + 1}).png`),
 };

@@ -15,12 +15,13 @@ const CHALLENGE_CONFIG = {
 const getInitialState = () => {
   const history = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
   const lastGame = history.length > 0 ? history[history.length - 1] : null;
-  const globalRecords = JSON.parse(localStorage.getItem('memoryGameRecords')) || {};
 
   let personalBest = null;
   if (lastGame) {
+    const recordKey = lastGame.gameMode === 'challenge' ? 'memoryGameChallengeRecords' : 'memoryGameRecords';
+    const records = JSON.parse(localStorage.getItem(recordKey)) || {};
     const gameModeKey = `${lastGame.theme}-${lastGame.difficulty}`;
-    personalBest = globalRecords[gameModeKey] || null;
+    personalBest = records[gameModeKey] || null;
   }
 
   return {
@@ -43,6 +44,22 @@ function App() {
   const [timer, setTimer] = useState(0);
   const [lastGameResult, setLastGameResult] = useState(initialState.lastGameResult);
   const [personalBest, setPersonalBest] = useState(initialState.personalBest);
+
+  const startGame = useCallback(() => {
+    if (playerName.trim() === '') {
+      setPlayerName('ANONIMO');
+    }
+    if (gameMode === 'challenge') {
+      const limits = CHALLENGE_CONFIG[difficulty];
+      setMoveCount(limits.moveLimit);
+      setTimer(limits.timeLimit);
+    } else {
+      setMoveCount(0);
+      setTimer(0);
+    }
+    setPoints(0);
+    setGameState('playing');
+  }, [playerName, gameMode, difficulty]);
 
   const handleGameOver = useCallback((status = 'win') => {
     if (gameState === 'gameOver') return;
@@ -69,6 +86,7 @@ function App() {
       moveCount: finalMoveCount,
       date: new Date().toISOString(),
       status,
+      gameMode,
     };
     setLastGameResult(gameResult);
 
@@ -77,18 +95,18 @@ function App() {
     localStorage.setItem('memoryGameHistory', JSON.stringify(history));
 
     if (status === 'win') {
-      // Lógica de Recorde Global
-      const globalRecords = JSON.parse(localStorage.getItem('memoryGameRecords')) || {};
+      const recordKey = gameMode === 'challenge' ? 'memoryGameChallengeRecords' : 'memoryGameRecords';
+      const records = JSON.parse(localStorage.getItem(recordKey)) || {};
       const gameModeKey = `${theme}-${difficulty}`;
-      const existingRecord = globalRecords[gameModeKey];
+      const existingRecord = records[gameModeKey];
       const newScore = { ...gameResult };
 
       if (!existingRecord || newScore.moveCount < existingRecord.moveCount || (newScore.moveCount === existingRecord.moveCount && newScore.timer < existingRecord.timer)) {
-        globalRecords[gameModeKey] = newScore;
-        localStorage.setItem('memoryGameRecords', JSON.stringify(globalRecords));
-        setPersonalBest(newScore); // O novo recorde é o melhor
+        records[gameModeKey] = newScore;
+        localStorage.setItem(recordKey, JSON.stringify(records));
+        setPersonalBest(newScore);
       } else {
-        setPersonalBest(existingRecord); // Mantém o recorde antigo como o melhor
+        setPersonalBest(existingRecord);
       }
     } else {
       setPersonalBest(null);
@@ -118,22 +136,6 @@ function App() {
     return () => clearInterval(intervalId);
   }, [gameState, gameMode, handleGameOver]);
 
-  const startGame = () => {
-    if (playerName.trim() === '') {
-      setPlayerName('ANONIMO');
-    }
-    if (gameMode === 'challenge') {
-      const limits = CHALLENGE_CONFIG[difficulty];
-      setMoveCount(limits.moveLimit);
-      setTimer(limits.timeLimit);
-    } else {
-      setMoveCount(0);
-      setTimer(0);
-    }
-    setPoints(0);
-    setGameState('playing');
-  };
-
   const backToMenu = () => {
     setGameState('menu');
   };
@@ -143,7 +145,8 @@ function App() {
   };
 
   const handleClearAllData = () => {
-    localStorage.removeItem('memoryGameRecords'); // Limpa os recordes globais
+    localStorage.removeItem('memoryGameRecords');
+    localStorage.removeItem('memoryGameChallengeRecords');
     localStorage.removeItem('memoryGameHistory');
     setPersonalBest(null);
     setLastGameResult(null);
@@ -191,6 +194,7 @@ function App() {
           gameResult={lastGameResult}
           onBackToMenu={backToMenu}
           onShowStats={showStats}
+          onRestart={startGame} // Passa a função startGame como onRestart
           personalBest={personalBest}
         />
       ) : (

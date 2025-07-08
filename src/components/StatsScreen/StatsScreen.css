@@ -2,10 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  padding: 2rem;
+  /* Espaçamento vertical entre os elementos reduzido */
+  gap: 0.75rem;
+  /* Padding vertical e horizontal reduzido */
+  padding: 1rem;
   width: 95%;
-  max-width: 1000px;
+  max-width: 1200px;
   border: 2px solid #f0f;
   border-radius: 10px;
   background-color: rgba(17, 24, 39, 0.8);
@@ -14,9 +16,11 @@
 }
 
 .stats-title {
-  font-size: 2.5rem;
+  /* Tamanho da fonte do título principal reduzido */
+  font-size: 1.8rem;
   color: #0ff;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+  margin-bottom: 1rem;
 }
 
 .stats-table-wrapper {
@@ -24,20 +28,37 @@
   border: 1px solid #0ff;
 }
 
-/* --- AJUSTE PARA ROLAGEM --- */
-/* Aplica a altura máxima e a rolagem à tabela de recordes */
 .stats-table-wrapper.records-table {
-  /* O valor foi ajustado para forçar a rolagem após a 3ª linha de dados */
-  max-height: 150px;
+  max-height: 115px;
   overflow-y: auto;
 }
 
-/* Aplica a altura máxima e a rolagem à tabela de histórico também */
 .stats-table-wrapper.history-table {
-    max-height: 400px;
+    /* Altura da tabela de histórico bem reduzida */
+    max-height: 180px;
     overflow-y: auto;
 }
-/* --- FIM DO AJUSTE --- */
+
+.challenge-indicator {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f0f;
+  margin: 0 auto;
+  position: relative;
+  background-color: rgba(0,0,0,0.2);
+  transition: all 0.2s ease-in-out;
+}
+
+.challenge-indicator.active::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background-color: #0ff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
 
 .stats-table {
   width: 100%;
@@ -50,15 +71,22 @@
   background-color: #1B263B;
   color: #f0f;
   top: 0;
-  position: sticky; /* Faz o cabeçalho ficar fixo ao rolar */
+  position: sticky;
+  z-index: 2;
 }
 
 .stats-table th,
 .stats-table td {
-  padding: 0.75rem;
+  /* Padding vertical das células da tabela bem reduzido */
+  padding: 0.4rem 0.75rem;
   text-align: center;
   border-bottom: 1px solid #f0f;
   word-wrap: break-word;
+}
+
+.stats-table tbody tr {
+  position: relative;
+  z-index: 1;
 }
 
 .stats-table tbody tr:nth-child(even) {
@@ -77,10 +105,12 @@
 }
 
 .section-title {
-  font-size: 1.5rem;
+  /* Fonte e margem dos títulos de seção reduzidos */
+  font-size: 1.2rem;
   color: #f0f;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-align: center;
+  margin-bottom: 1rem;
 }
 
 .summary-table-wrapper {
@@ -92,8 +122,9 @@
 }
 
 .summary-table td {
-  font-size: 0.9rem;
-  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
+  /* Padding da tabela de resumo reduzido */
+  padding: 0.4rem 1rem;
   border-bottom: 1px solid #2c3a52;
 }
 
@@ -113,11 +144,16 @@
   color: #fff;
 }
 
+.summary-table .challenge-indicator {
+    margin-left: auto;
+    margin-right: 0;
+}
+
 .no-stats-message {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #fff;
-  margin: 2rem 0;
-  text-align: center;
+  /* Margem vertical reduzida */
+  margin: 0.5rem 0;
 }
 
 .stats-buttons {
@@ -125,37 +161,51 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
+.btn-green {
+    border-color: #00ff00;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+}
 
+.btn-green:hover, .btn-green:focus {
+    background-color: #00ff00;
+    color: #000;
+}
+
+/* Estilos da barra de rolagem */
 ::-webkit-scrollbar {
-width: 8px; /* Largura da barra de rolagem */
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-background-color: #1B263B; /* Cor do fundo da "trilha" da barra de rolagem */
-border-radius: 4px;
+  background-color: #1B263B;
+  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb {
-background-color: #0ff; /* Cor do "polegar" (a parte que você arrasta) /
-border-radius: 4px;
-border: 1px solid #000; / Adiciona uma borda sutil para destacar */
+  background-color: #0ff;
+  border-radius: 4px;
+  border: 1px solid #000;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-background-color: #00ffff; /* Cor ao passar o mouse */
+  background-color: #00ffff;
 }
-
 ::-webkit-scrollbar-thumb:active {
-background-color: #00b3b3; /* Cor ao clicar */
+  background-color: #00b3b3;
+}
+.stats-table-wrapper.records-table,
+.stats-table-wrapper.history-table {
+  scrollbar-color: #0ff #1B263B;
+  scrollbar-width: thin;
 }
 
-/* Estilos para Firefox /
-/ Define a cor do polegar e da trilha */
-.stats-table-wrapper.records-table {
-scrollbar-color: #0ff #1B263B;
-scrollbar-width: thin; 
-max-height: 150px;
-overflow-y: auto;
+.records-section {
+    margin-top: 1rem;
+
+}
+
+.stats-buttons {
+    margin-top: 1rem;
 }
