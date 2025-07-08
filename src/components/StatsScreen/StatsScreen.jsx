@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './StatsScreen.css';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 // Função auxiliar para formatar o tempo
 const formatTime = (totalSeconds) => {
@@ -12,6 +13,7 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
   const [view, setView] = useState('personal'); 
   const [records, setRecords] = useState([]);
   const [history, setHistory] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const allPlayersRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
@@ -37,13 +39,16 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
     setHistory(savedHistory);
   }, [view, currentPlayerName]);
 
-  const handleClearData = () => {
-    if (window.confirm('Tem certeza que deseja apagar TODOS os dados (histórico e recordes)?')) {
-      localStorage.removeItem('memoryGameRecords');
-      localStorage.removeItem('memoryGameHistory');
-      setRecords([]);
-      setHistory([]);
-    }
+  const handleClearDataClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const confirmClearData = () => {
+    localStorage.removeItem('memoryGameRecords');
+    localStorage.removeItem('memoryGameHistory');
+    setRecords([]);
+    setHistory([]);
+    setIsModalOpen(false); // Fecha o modal após confirmar
   };
 
   if (view === 'history') {
@@ -88,103 +93,109 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
   }
 
   return (
-    <div className="stats-container">
-      <h1 className="stats-title">Resumo e Recordes</h1>
+    <>
+      <ConfirmModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={confirmClearData}
+          message="Tem certeza que deseja apagar TODOS os dados (histórico e recordes)?"
+      />
 
-      {lastGame && (
-        <div className="summary-section">
-          <h2 className="section-title">Última Partida</h2>
-          {/* AQUI ESTÁ A MUDANÇA: Usamos uma tabela para o resumo */}
-          <div className="stats-table-wrapper summary-table-wrapper">
-            <table className="stats-table summary-table">
-              <tbody>
-                <tr>
-                  <td>Jogador:</td>
-                  <td>{lastGame.playerName}</td>
-                </tr>
-                <tr>
-                  <td>Tema:</td>
-                  <td>{lastGame.theme}</td>
-                </tr>
-                <tr>
-                  <td>Dificuldade:</td>
-                  <td>{lastGame.difficulty}</td>
-                </tr>
-                <tr>
-                  <td>Jogadas:</td>
-                  <td>{lastGame.moveCount}</td>
-                </tr>
-                <tr>
-                  <td>Tempo:</td>
-                  <td>{formatTime(lastGame.timer)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      <div className="stats-container">
+        <h1 className="stats-title">Resumo e Recordes</h1>
 
-      <div className="records-section">
-        {/* O título da seção muda dinamicamente agora */}
-        <h2 className="section-title">
-          {view === 'personal' ? 'Meus Recordes' : 'Recordes Gerais'}
-        </h2>
-
-        {records.length > 0 ? (
-          <div className="stats-table-wrapper">
-            <table className="stats-table">
-              <thead>
-                <tr>
-                  {/* ADICIONADO O CABEÇALHO QUE FALTAVA */}
-                  <th>Jogador</th>
-                  <th>Tema</th>
-                  <th>Dificuldade</th>
-                  <th>Jogadas</th>
-                  <th>Tempo</th>
-                  <th>Data</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record, index) => (
-                  <tr key={index}>
-                    {/* DADOS AGORA NA ORDEM CORRETA */}
-                    <td>{record.playerName}</td>
-                    <td>{record.theme}</td>
-                    <td>{record.difficulty}</td>
-                    <td>{record.moveCount}</td>
-                    <td>{formatTime(record.timer)}</td>
-                    <td>{new Date(record.date).toLocaleDateString('pt-BR')}</td>
+        {lastGame && (
+          <div className="summary-section">
+            <h2 className="section-title">Última Partida</h2>
+            
+            <div className="stats-table-wrapper summary-table-wrapper">
+              <table className="stats-table summary-table">
+                <tbody>
+                  <tr>
+                    <td>Jogador:</td>
+                    <td>{lastGame.playerName}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                  <tr>
+                    <td>Tema:</td>
+                    <td>{lastGame.theme}</td>
+                  </tr>
+                  <tr>
+                    <td>Dificuldade:</td>
+                    <td>{lastGame.difficulty}</td>
+                  </tr>
+                  <tr>
+                    <td>Jogadas:</td>
+                    <td>{lastGame.moveCount}</td>
+                  </tr>
+                  <tr>
+                    <td>Tempo:</td>
+                    <td>{formatTime(lastGame.timer)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        ) : (
-          <p className="no-stats-message">Nenhum recorde registrado para esta visualização.</p>
         )}
-      </div>
 
-      <div className="stats-buttons">
-        <button className="btn btn-magenta" onClick={onBackToMenu}>
-          Voltar ao Menu
-        </button>
-        {view === 'personal' ? (
-          <button className="btn btn-cyan" onClick={() => setView('overall')}>Ver Recordes Gerais</button>
-        ) : (
-          <button className="btn btn-cyan" onClick={() => setView('personal')}>Ver Meus Recordes</button>
-        )}
-        {history.length > 0 && (
-           <button className="btn btn-cyan" onClick={() => setView('history')}>
-             Ver Histórico
-           </button>
-        )}
-        {(history.length > 0 || records.length > 0) && (
-          <button className="btn btn-yellow" onClick={handleClearData}>
-            Limpar Dados
+        <div className="records-section">
+          <h2 className="section-title">
+            {view === 'personal' ? 'Meus Recordes' : 'Recordes Gerais'}
+          </h2>
+
+          {records.length > 0 ? (
+            <div className="stats-table-wrapper">
+              <table className="stats-table">
+                <thead>
+                  <tr>
+                    <th>Jogador</th>
+                    <th>Tema</th>
+                    <th>Dificuldade</th>
+                    <th>Jogadas</th>
+                    <th>Tempo</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record, index) => (
+                    <tr key={index}>
+                      <td>{record.playerName}</td>
+                      <td>{record.theme}</td>
+                      <td>{record.difficulty}</td>
+                      <td>{record.moveCount}</td>
+                      <td>{formatTime(record.timer)}</td>
+                      <td>{new Date(record.date).toLocaleDateString('pt-BR')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="no-stats-message">Nenhum recorde registrado para esta visualização.</p>
+          )}
+        </div>
+
+        <div className="stats-buttons">
+          <button className="btn btn-magenta" onClick={onBackToMenu}>
+            Voltar ao Menu
           </button>
-        )}
+          {view === 'personal' ? (
+            <button className="btn btn-cyan" onClick={() => setView('overall')}>Ver Recordes Gerais</button>
+          ) : (
+            <button className="btn btn-cyan" onClick={() => setView('personal')}>Ver Meus Recordes</button>
+          )}
+          {history.length > 0 && (
+            <button className="btn btn-cyan" onClick={() => setView('history')}>
+              Ver Histórico
+            </button>
+          )}
+          {(history.length > 0 || records.length > 0) && (
+            <button className="btn btn-yellow" onClick={handleClearDataClick}>
+              Limpar Dados
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
