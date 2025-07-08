@@ -1,61 +1,78 @@
 import React from 'react';
-import './GameOverScreen.css';
+ import './GameOverScreen.css';
 
-const formatTime = (totalSeconds) => {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
+ const formatTime = (totalSeconds) => {
+   const minutes = Math.floor(totalSeconds / 60);
+   const seconds = totalSeconds % 60;
+   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+ };
 
-function GameOverScreen({
-    playerName,
-    points,
-    timer,
-    moveCount,
-    onBackToMenu,
-    onShowStats,
-    personalBest
-}) {
-    return (
-        <div className="game-over-container">
-            <h1 className="game-over-title">FIM DE JOGO!</h1>
-            <p className="player-name-congrats">
-                Parabéns, <span className="highlight">{playerName}</span>!
-            </p>
+ function GameOverScreen({
+   gameStatus,
+   playerName,
+   points,
+   timer,
+   moveCount,
+   onBackToMenu,
+   onShowStats,
+   personalBest,
+   gameMode,
+   challengeInitialConfig
+ }) {
+   const isWin = gameStatus === 'win';
+   const isChallengeWin = isWin && gameMode === 'challenge';
 
-           <div className="stats-summary">
-                <div className="stat-item">
-                    <span className="stat-label">PONTOS</span>
-                    <span className="stat-value highlight">{points}</span>
-                </div>
-                <div className="stat-item">
-                    <span className="stat-label">TEMPO</span>
-                    <span className="stat-value highlight">{formatTime(timer)}</span>
-                </div>
-                <div className="stat-item">
-                    <span className="stat-label">JOGADAS</span>
-                    <span className="stat-value highlight">{moveCount}</span>
-                </div>
-            </div>
-            {personalBest &&(
-                <div className="personal-best-section">
-                    <p>Seu recorde pessoal neste modo:</p>
-                    <p>
-                        <span className="highlight">{personalBest.moveCount}</span> Jogadas em <span className="highlight">{formatTime(personalBest.timer)}</span>
-                    </p>
-                </div>
-            )}
+   const timeLabel = isChallengeWin ? "TEMPO RESTANTE" : "TEMPO";
+   const timeValue = isChallengeWin ? formatTime(timer) : formatTime(challengeInitialConfig ? challengeInitialConfig.timeLimit - timer : timer);
 
-            <div className="game-over-buttons">
-                <button className="btn btn-magenta" onClick={onBackToMenu}>
-                    Menu inicial
-                </button>
-                <button className="btn btn-cyan" onClick={onShowStats}>
-                    Estatisticas
-                </button>
-            </div>
-        </div>
-    );
-}
+   const movesLabel = isChallengeWin ? "JOGADAS RESTANTES" : "JOGADAS";
+   const movesValue = isChallengeWin ? moveCount : (gameMode === 'challenge' ? challengeInitialConfig.moveLimit - moveCount : moveCount);
 
-export default GameOverScreen;
+   return (
+     <div className={`game-over-container ${!isWin ? 'loss-style' : ''}`}>
+       <h1 className="game-over-title">{isWin ? "FIM DE JOGO!" : "GAME OVER"}</h1>
+       <p className="player-name-congrats">
+         {isWin ? (
+           <>Parabéns, <span className="highlight">{playerName}</span>!</>
+         ) : (
+           <>Não foi desta vez, <span className="highlight">{playerName}</span>!</>
+         )}
+       </p>
+
+       <div className="stats-summary">
+         <div className="stat-item">
+           <span className="stat-label">PONTOS</span>
+           <span className="stat-value highlight">{points}</span>
+         </div>
+         <div className="stat-item">
+           <span className="stat-label">{timeLabel}</span>
+           <span className="stat-value highlight">{timeValue}</span>
+         </div>
+         <div className="stat-item">
+           <span className="stat-label">{movesLabel}</span>
+           <span className="stat-value highlight">{movesValue}</span>
+         </div>
+       </div>
+
+       {isWin && personalBest && (
+         <div className="personal-best-section">
+           <p>Seu recorde pessoal neste modo:</p>
+           <p>
+             <span className="highlight">{personalBest.moveCount}</span> Jogadas em <span className="highlight">{formatTime(personalBest.timer)}</span>
+           </p>
+         </div>
+       )}
+
+       <div className="game-over-buttons">
+         <button className="btn btn-magenta" onClick={onBackToMenu}>
+           Menu inicial
+         </button>
+         <button className="btn btn-cyan" onClick={onShowStats}>
+           Estatisticas
+         </button>
+       </div>
+     </div>
+   );
+ }
+
+ export default GameOverScreen;

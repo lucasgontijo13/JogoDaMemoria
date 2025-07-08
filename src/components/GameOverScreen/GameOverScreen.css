@@ -29,11 +29,13 @@
   font-size: 3rem;
   color: #ff0;
   text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  text-align: center;
 }
 
 .player-name-congrats {
   font-size: 1.2rem;
   color: #fff;
+  text-align: center;
 }
 
 .highlight {
@@ -59,25 +61,35 @@
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #f0f;
-  min-width: 120px;
+  flex: 1;
+  min-width: 130px;
+  text-align: center;
 }
 
 .stat-label {
   font-size: 0.8rem;
   color: #f0f;
+  text-transform: uppercase;
 }
 
 .stat-value {
   font-size: 1.5rem;
 }
 
-.game-over-buttons {
-  display: flex;
-  gap: 1rem;
+.personal-best-section {
+  text-align: center;
   margin-top: 1rem;
 }
 
-/* Reusing button styles from GameMenu.css for consistency */
+.game-over-buttons {
+  display: flex;
+  justify-content: center; /* Centraliza os botões */
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%; /* Garante que o container ocupe a largura */
+}
+
+/* Reutilizando estilos de botão do GameMenu.css para consistência */
 .btn {
   padding: 1rem 1.5rem;
   font-family: 'Press Start 2P', cursive;
@@ -109,3 +121,13 @@
 
 .btn-magenta:hover { background-color: #f0f; }
 .btn-cyan:hover { background-color: #0ff; }
+
+/* Estilos para a tela de derrota */
+.game-over-container.loss-style .game-over-title {
+    color: #ff0000; /* Vermelho para derrota */
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
+.game-over-container.loss-style .highlight {
+    color: #ff0000;
+}
