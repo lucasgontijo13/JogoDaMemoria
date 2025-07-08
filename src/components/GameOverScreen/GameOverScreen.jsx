@@ -8,27 +8,16 @@ const formatTime = (totalSeconds) => {
 };
 
 function GameOverScreen({
-    gameResult, // Recebe o objeto completo
+    gameResult,
     onBackToMenu,
     onShowStats,
     personalBest,
-    gameMode,
-    challengeInitialConfig
 }) {
-    if (!gameResult) return null; // Não renderiza nada se não houver resultado
+    if (!gameResult) return null;
 
     const { playerName, points, timer, moveCount, status } = gameResult;
-
     const isWin = status === 'win';
-    const isChallengeWin = isWin && gameMode === 'challenge';
 
-    const timeLabel = isChallengeWin ? "TEMPO RESTANTE" : "TEMPO";
-    const timeValue = isChallengeWin ? formatTime(timer) : formatTime(challengeInitialConfig ? challengeInitialConfig.timeLimit - timer : timer);
-
-    const movesLabel = isChallengeWin ? "JOGADAS RESTANTES" : "JOGADAS";
-    const movesValue = isChallengeWin ? moveCount : (gameMode === 'challenge' ? challengeInitialConfig.moveLimit - moveCount : moveCount);
-
-    // Condição corrigida: mostra o recorde anterior se ele existir e for diferente do recorde da partida atual (identificado pela data)
     const showPreviousBest = isWin && personalBest && personalBest.date !== gameResult.date;
 
     return (
@@ -48,12 +37,12 @@ function GameOverScreen({
                     <span className="stat-value highlight">{points}</span>
                 </div>
                 <div className="stat-item">
-                    <span className="stat-label">{timeLabel}</span>
-                    <span className="stat-value highlight">{timeValue}</span>
+                    <span className="stat-label">TEMPO</span>
+                    <span className="stat-value highlight">{formatTime(timer)}</span>
                 </div>
                 <div className="stat-item">
-                    <span className="stat-label">{movesLabel}</span>
-                    <span className="stat-value highlight">{movesValue}</span>
+                    <span className="stat-label">JOGADAS</span>
+                    <span className="stat-value highlight">{moveCount}</span>
                 </div>
             </div>
 

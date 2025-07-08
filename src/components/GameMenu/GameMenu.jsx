@@ -50,7 +50,7 @@ function GameMenu({
           onClick={() => setDifficulty('Medio')}
           className={`btn btn-cyan ${difficulty === 'Medio' ? 'active' : ''}`}
         >
-          Médio
+          Medio
         </button>
         <button
           onClick={() => setDifficulty('Dificil')}
@@ -72,8 +72,8 @@ function GameMenu({
           EMOJI
         </button>
         <button
-          onClick={() => setTheme('SUPERHEROI')}
-          className={`btn theme-btn btn-yellow ${theme === 'SUPERHEROI' ? 'active' : ''}`}
+          onClick={() => setTheme('HEROI')}
+          className={`btn theme-btn btn-yellow ${theme === 'HEROI' ? 'active' : ''}`}
         >
           HEROI
         </button>

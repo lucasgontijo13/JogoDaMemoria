@@ -45,13 +45,24 @@ function App() {
   const [timer, setTimer] = useState(0);
   const [lastGameResult, setLastGameResult] = useState(initialState.lastGameResult);
   const [personalBest, setPersonalBest] = useState(initialState.personalBest);
-  const [challengeInitialConfig, setChallengeInitialConfig] = useState(null);
 
   const handleGameOver = useCallback((status = 'win') => {
     if (gameState === 'gameOver') return;
 
-    const finalMoveCount = gameMode === 'classic' ? moveCount + 1 : moveCount;
-    const finalTimer = gameMode === 'classic' ? timer + 1 : timer;
+    let finalMoveCount, finalTimer;
+
+    if (gameMode === 'challenge') {
+      const config = CHALLENGE_CONFIG[difficulty];
+      const realMovesLeft = moveCount > 0 ? moveCount - 1 : 0;
+      finalMoveCount = config.moveLimit - realMovesLeft;
+
+      const realTimeLeft = timer > 0 ? timer - 1 : 0;
+      finalTimer = config.timeLimit - realTimeLeft;
+    } else {
+      finalMoveCount = moveCount + 1;
+      finalTimer = timer + 1;
+    }
+
     const finalPoints = status === 'win' ? points + 1 : points;
 
     const gameResult = {
@@ -118,11 +129,9 @@ function App() {
 
     if (gameMode === 'challenge') {
       const limits = CHALLENGE_CONFIG[difficulty];
-      setChallengeInitialConfig(limits);
       setMoveCount(limits.moveLimit);
       setTimer(limits.timeLimit);
     } else {
-      setChallengeInitialConfig(null);
       setMoveCount(0);
       setTimer(0);
     }
@@ -189,8 +198,6 @@ function App() {
           onBackToMenu={backToMenu}
           onShowStats={showStats}
           personalBest={personalBest}
-          gameMode={gameMode}
-          challengeInitialConfig={challengeInitialConfig}
         />
       ) : (
         <StatsScreen
