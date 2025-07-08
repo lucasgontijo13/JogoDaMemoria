@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './StatsScreen.css';
-import ConfirmModal from '../ConfirmModal/ConfirmModal'; // Importa o novo componente
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 const formatTime = (totalSeconds) => {
   const minutes = Math.floor(totalSeconds / 60);
@@ -9,11 +9,12 @@ const formatTime = (totalSeconds) => {
 };
 
 // Componente reutilizável para exibir a tabela de recordes
-const RecordsDisplay = ({ title, records, onBack }) => (
+// Adicionada a prop 'tableClassName' para permitir estilos diferentes
+const RecordsDisplay = ({ title, records, onBack, tableClassName }) => (
     <div className="stats-container">
         <h1 className="stats-title">{title}</h1>
         {records.length > 0 ? (
-            <div className="stats-table-wrapper records-table">
+            <div className={`stats-table-wrapper ${tableClassName || 'records-table'}`}>
                 <table className="stats-table">
                     <thead>
                         <tr>
@@ -59,8 +60,8 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
   const [classicRecords, setClassicRecords] = useState([]);
   const [challengeRecords, setChallengeRecords] = useState([]);
   const [history, setHistory] = useState([]);
-  const [view, setView] = useState('summary'); // Mantém o estado da 'main'
-  const [isModalOpen, setIsModalOpen] = useState(false); // Mantém o estado da 'Iasmin'
+  const [view, setView] = useState('summary');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const classic = Object.values(JSON.parse(localStorage.getItem('memoryGameRecords')) || {});
@@ -73,18 +74,16 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
     setHistory(savedHistory);
   }, []);
 
-  // Função da 'Iasmin' para abrir o modal
   const handleClearDataClick = () => {
     setIsModalOpen(true);
   };
 
-  // Função da 'Iasmin' para confirmar a ação, adaptada para usar a lógica da 'main'
   const confirmClearData = () => {
-    onClearData(); // Chama a função do componente pai
+    onClearData();
     setClassicRecords([]);
     setChallengeRecords([]);
     setHistory([]);
-    setIsModalOpen(false); // Fecha o modal
+    setIsModalOpen(false);
   };
 
   const hasData = classicRecords.length > 0 || challengeRecords.length > 0 || history.length > 0;
@@ -103,13 +102,13 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
     );
   }
 
-  // Mantém a lógica de visualização da 'main'
   if (view === 'classic_records') {
     return <RecordsDisplay title="Recordes Gerais" records={classicRecords} onBack={() => setView('summary')} />;
   }
-
+  
+  // Passa a nova classe CSS para a tabela de recordes de desafio
   if (view === 'challenge_records') {
-    return <RecordsDisplay title="Recordes Desafio" records={challengeRecords} onBack={() => setView('summary')} />;
+    return <RecordsDisplay title="Recordes Desafio" records={challengeRecords} onBack={() => setView('summary')} tableClassName="challenge-records-table" />;
   }
 
   if (view === 'history') {
@@ -155,7 +154,6 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
     );
   }
 
-  // Mantém a estrutura de tela principal da 'main' e insere o modal da 'Iasmin'
   return (
     <>
       <ConfirmModal
@@ -164,10 +162,8 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
         onConfirm={confirmClearData}
         message="Tem certeza que deseja apagar TODOS os dados (histórico e recordes)?"
       />
-
       <div className="stats-container">
         <h1 className="stats-title">Estatísticas</h1>
-
         {lastGame && (
           <div className="summary-section">
             <h2 className="section-title">Última Partida</h2>
@@ -186,7 +182,6 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
             </div>
           </div>
         )}
-
         <div className="records-section">
           <h2 className="section-title">Recordes Gerais</h2>
           {classicRecords.length > 0 ? (
@@ -224,7 +219,6 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
             <p className="no-stats-message">Nenhum recorde no modo geral.</p>
           )}
         </div>
-
         <div className="stats-buttons">
           <button className="btn btn-magenta" onClick={onBackToMenu}>
             Voltar ao Menu
