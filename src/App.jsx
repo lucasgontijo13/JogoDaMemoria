@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import GameMenu from './components/GameMenu/GameMenu';
 import GameBoard from './components/GameBoard/GameBoard';
 import GameInfoBar from './components/GameInfoBar/GameInfoBar';
@@ -7,24 +7,88 @@ import StatsScreen from './components/StatsScreen/StatsScreen';
 import './App.css';
 
 const CHALLENGE_CONFIG = {
-  Facil: { timeLimit: 2, moveLimit: 40 },
+  Facil: { timeLimit: 90, moveLimit: 40 },
   Medio: { timeLimit: 120, moveLimit: 60 },
   Dificil: { timeLimit: 150, moveLimit: 75 },
 };
 
+const getInitialState = () => {
+  const history = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
+  const lastGame = history.length > 0 ? history[history.length - 1] : null;
+
+  if (lastGame) {
+    const allRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
+    const playerRecords = allRecords[lastGame.playerName] || {};
+    const gameModeKey = `${lastGame.theme}-${lastGame.difficulty}`;
+    const personalBest = playerRecords[gameModeKey] || null;
+
+    return {
+      playerName: lastGame.playerName,
+      lastGameResult: lastGame,
+      personalBest: personalBest
+    };
+  }
+
+  return { playerName: '', lastGameResult: null, personalBest: null };
+};
+
 function App() {
+  const initialState = getInitialState();
+
   const [gameState, setGameState] = useState('menu');
-  const [gameStatus, setGameStatus] = useState('win');
   const [gameMode, setGameMode] = useState('classic');
   const [difficulty, setDifficulty] = useState('Facil');
   const [theme, setTheme] = useState('ANIMAL');
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerName] = useState(initialState.playerName);
   const [moveCount, setMoveCount] = useState(0);
   const [points, setPoints] = useState(0);
   const [timer, setTimer] = useState(0);
-  const [lastGameResult, setLastGameResult] = useState(null);
-  const [personalBest, setPersonalBest] = useState(null);
-  const [challengeInitialConfig, setChallengeInitialConfig] = useState(null); // Guarda a config inicial
+  const [lastGameResult, setLastGameResult] = useState(initialState.lastGameResult);
+  const [personalBest, setPersonalBest] = useState(initialState.personalBest);
+  const [challengeInitialConfig, setChallengeInitialConfig] = useState(null);
+
+  const handleGameOver = useCallback((status = 'win') => {
+    if (gameState === 'gameOver') return;
+
+    const finalMoveCount = gameMode === 'classic' ? moveCount + 1 : moveCount;
+    const finalTimer = gameMode === 'classic' ? timer + 1 : timer;
+    const finalPoints = status === 'win' ? points + 1 : points;
+
+    const gameResult = {
+      playerName, difficulty, theme,
+      points: finalPoints,
+      timer: finalTimer,
+      moveCount: finalMoveCount,
+      date: new Date().toISOString(),
+      status,
+    };
+    setLastGameResult(gameResult);
+
+    const history = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
+    history.push(gameResult);
+    localStorage.setItem('memoryGameHistory', JSON.stringify(history));
+
+    if (status === 'win') {
+      const allPlayersRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
+      const currentPlayerRecords = allPlayersRecords[playerName] || {};
+      const gameModeKey = `${theme}-${difficulty}`;
+      const existingPersonalRecord = currentPlayerRecords[gameModeKey];
+      const newScore = { ...gameResult };
+
+      if (!existingPersonalRecord || newScore.moveCount < existingPersonalRecord.moveCount || (newScore.moveCount === existingPersonalRecord.moveCount && newScore.timer < existingPersonalRecord.timer)) {
+        currentPlayerRecords[gameModeKey] = newScore;
+        allPlayersRecords[playerName] = currentPlayerRecords;
+        localStorage.setItem('allPlayersRecords', JSON.stringify(allPlayersRecords));
+        setPersonalBest(newScore);
+      } else {
+        setPersonalBest(existingPersonalRecord);
+      }
+    } else {
+      setPersonalBest(null);
+    }
+
+    setGameState('gameOver');
+  }, [gameState, gameMode, moveCount, timer, points, playerName, difficulty, theme]);
 
   useEffect(() => {
     let intervalId;
@@ -45,7 +109,7 @@ function App() {
       }, 1000);
     }
     return () => clearInterval(intervalId);
-  }, [gameState, gameMode]);
+  }, [gameState, gameMode, handleGameOver]);
 
   const startGame = () => {
     if (playerName.trim() === '') {
@@ -54,11 +118,11 @@ function App() {
 
     if (gameMode === 'challenge') {
       const limits = CHALLENGE_CONFIG[difficulty];
-      setChallengeInitialConfig(limits); // Salva a config
+      setChallengeInitialConfig(limits);
       setMoveCount(limits.moveLimit);
       setTimer(limits.timeLimit);
     } else {
-      setChallengeInitialConfig(null); // Limpa a config
+      setChallengeInitialConfig(null);
       setMoveCount(0);
       setTimer(0);
     }
@@ -71,50 +135,15 @@ function App() {
     setGameState('menu');
   };
 
-  const handleGameOver = (status = 'win') => {
-    if (gameState === 'gameOver') return;
-
-    setGameStatus(status);
-
-    const gameResult = {
-      playerName, difficulty, theme, points, timer, moveCount,
-      date: new Date().toISOString(),
-      status,
-    };
-    setLastGameResult(gameResult);
-
-    const history = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
-    history.push(gameResult);
-    localStorage.setItem('memoryGameHistory', JSON.stringify(history));
-
-    if (status === 'win') {
-      const allPlayersRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
-      const currentPlayerRecords = allPlayersRecords[playerName] || {};
-      const gameModeKey = `${theme}-${difficulty}`;
-      const existingPersonalRecord = currentPlayerRecords[gameModeKey];
-
-      const newScore = {
-        playerName, theme, difficulty, moveCount, timer,
-        date: gameResult.date,
-      };
-
-      if (!existingPersonalRecord || newScore.moveCount < existingPersonalRecord.moveCount || (newScore.moveCount === existingPersonalRecord.moveCount && newScore.timer < existingPersonalRecord.timer)) {
-        currentPlayerRecords[gameModeKey] = newScore;
-        allPlayersRecords[playerName] = currentPlayerRecords;
-        localStorage.setItem('allPlayersRecords', JSON.stringify(allPlayersRecords));
-        setPersonalBest(newScore);
-      } else {
-        setPersonalBest(existingPersonalRecord);
-      }
-    } else {
-      setPersonalBest(null);
-    }
-
-    setGameState('gameOver');
-  };
-
   const showStats = () => {
     setGameState('stats');
+  };
+
+  const handleClearAllData = () => {
+    localStorage.removeItem('allPlayersRecords');
+    localStorage.removeItem('memoryGameHistory');
+    setPersonalBest(null);
+    setLastGameResult(null);
   };
 
   return (
@@ -156,22 +185,19 @@ function App() {
         </>
       ) : gameState === 'gameOver' ? (
         <GameOverScreen
-          gameStatus={gameStatus}
-          playerName={playerName}
-          points={points}
-          timer={timer}
-          moveCount={moveCount}
+          gameResult={lastGameResult}
           onBackToMenu={backToMenu}
           onShowStats={showStats}
           personalBest={personalBest}
-          gameMode={gameMode} // Passa o modo de jogo
-          challengeInitialConfig={challengeInitialConfig} // Passa a config
+          gameMode={gameMode}
+          challengeInitialConfig={challengeInitialConfig}
         />
       ) : (
         <StatsScreen
           onBackToMenu={backToMenu}
           lastGame={lastGameResult}
           currentPlayerName={playerName}
+          onClearData={handleClearAllData}
         />
       )}
     </div>
