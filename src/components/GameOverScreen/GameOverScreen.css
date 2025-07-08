@@ -5,8 +5,8 @@
   justify-content: center;
   gap: 2rem;
   padding: 2rem;
-  width: 90%;
-  max-width: 600px;
+  width: 95%;
+  max-width: 700px;
   border: 2px solid #0ff;
   border-radius: 10px;
   background-color: rgba(17, 24, 39, 0.8);
@@ -29,11 +29,13 @@
   font-size: 3rem;
   color: #ff0;
   text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  text-align: center;
 }
 
 .player-name-congrats {
   font-size: 1.2rem;
   color: #fff;
+  text-align: center;
 }
 
 .highlight {
@@ -59,25 +61,35 @@
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #f0f;
-  min-width: 120px;
+  flex: 1;
+  min-width: 130px;
+  text-align: center;
 }
 
 .stat-label {
   font-size: 0.8rem;
   color: #f0f;
+  text-transform: uppercase;
 }
 
 .stat-value {
   font-size: 1.5rem;
 }
 
-.game-over-buttons {
-  display: flex;
-  gap: 1rem;
+.personal-best-section {
+  text-align: center;
   margin-top: 1rem;
 }
 
-/* Reusing button styles from GameMenu.css for consistency */
+.game-over-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+/* Regra geral para botões (sem flex-grow) */
 .btn {
   padding: 1rem 1.5rem;
   font-family: 'Press Start 2P', cursive;
@@ -87,6 +99,13 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   border: 2px solid;
+}
+
+/* --- CORREÇÃO APLICADA AQUI --- */
+/* A regra de crescimento agora é específica para os botões dentro da tela de game over */
+.game-over-buttons .btn {
+    flex-grow: 1;
+    max-width: fit-content;
 }
 
 .btn-magenta {
@@ -103,9 +122,31 @@
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
 }
 
+.btn-green {
+    border-color: #00ff00;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+}
+
+.btn-green:hover {
+    background-color: #00ff00;
+    color: #000;
+}
+
 .btn:hover {
   color: #000;
 }
 
 .btn-magenta:hover { background-color: #f0f; }
 .btn-cyan:hover { background-color: #0ff; }
+
+/* Estilos para a tela de derrota */
+.game-over-container.loss-style .game-over-title {
+    color: #ff0000;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
+.game-over-container.loss-style .highlight {
+    color: #ff0000;
+}
