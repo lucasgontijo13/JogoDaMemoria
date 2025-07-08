@@ -1,0 +1,66 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: #1B263B;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  border: 2px solid #f0f;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  text-align: center;
+  max-width: 450px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+/* Reutilizando estilos de botão para consistência */
+.modal-buttons .btn {
+  padding: 0.8rem 1.5rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid;
+}
+
+.modal-buttons .btn-magenta { border-color: #f0f; color: #f0f; }
+.modal-buttons .btn-yellow { border-color: #ff0; color: #ff0; }
+
+.modal-buttons .btn:hover { color: #000; }
+.modal-buttons .btn-magenta:hover { background-color: #f0f; }
+.modal-buttons .btn-yellow:hover { background-color: #ff0; }
