@@ -15,21 +15,19 @@ const CHALLENGE_CONFIG = {
 const getInitialState = () => {
   const history = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
   const lastGame = history.length > 0 ? history[history.length - 1] : null;
+  const globalRecords = JSON.parse(localStorage.getItem('memoryGameRecords')) || {};
 
+  let personalBest = null;
   if (lastGame) {
-    const allRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
-    const playerRecords = allRecords[lastGame.playerName] || {};
     const gameModeKey = `${lastGame.theme}-${lastGame.difficulty}`;
-    const personalBest = playerRecords[gameModeKey] || null;
-
-    return {
-      playerName: lastGame.playerName,
-      lastGameResult: lastGame,
-      personalBest: personalBest
-    };
+    personalBest = globalRecords[gameModeKey] || null;
   }
 
-  return { playerName: '', lastGameResult: null, personalBest: null };
+  return {
+    playerName: lastGame ? lastGame.playerName : '',
+    lastGameResult: lastGame,
+    personalBest: personalBest
+  };
 };
 
 function App() {
@@ -55,7 +53,6 @@ function App() {
       const config = CHALLENGE_CONFIG[difficulty];
       const realMovesLeft = moveCount > 0 ? moveCount - 1 : 0;
       finalMoveCount = config.moveLimit - realMovesLeft;
-
       const realTimeLeft = timer > 0 ? timer - 1 : 0;
       finalTimer = config.timeLimit - realTimeLeft;
     } else {
@@ -80,19 +77,18 @@ function App() {
     localStorage.setItem('memoryGameHistory', JSON.stringify(history));
 
     if (status === 'win') {
-      const allPlayersRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
-      const currentPlayerRecords = allPlayersRecords[playerName] || {};
+      // Lógica de Recorde Global
+      const globalRecords = JSON.parse(localStorage.getItem('memoryGameRecords')) || {};
       const gameModeKey = `${theme}-${difficulty}`;
-      const existingPersonalRecord = currentPlayerRecords[gameModeKey];
+      const existingRecord = globalRecords[gameModeKey];
       const newScore = { ...gameResult };
 
-      if (!existingPersonalRecord || newScore.moveCount < existingPersonalRecord.moveCount || (newScore.moveCount === existingPersonalRecord.moveCount && newScore.timer < existingPersonalRecord.timer)) {
-        currentPlayerRecords[gameModeKey] = newScore;
-        allPlayersRecords[playerName] = currentPlayerRecords;
-        localStorage.setItem('allPlayersRecords', JSON.stringify(allPlayersRecords));
-        setPersonalBest(newScore);
+      if (!existingRecord || newScore.moveCount < existingRecord.moveCount || (newScore.moveCount === existingRecord.moveCount && newScore.timer < existingRecord.timer)) {
+        globalRecords[gameModeKey] = newScore;
+        localStorage.setItem('memoryGameRecords', JSON.stringify(globalRecords));
+        setPersonalBest(newScore); // O novo recorde é o melhor
       } else {
-        setPersonalBest(existingPersonalRecord);
+        setPersonalBest(existingRecord); // Mantém o recorde antigo como o melhor
       }
     } else {
       setPersonalBest(null);
@@ -126,7 +122,6 @@ function App() {
     if (playerName.trim() === '') {
       setPlayerName('ANONIMO');
     }
-
     if (gameMode === 'challenge') {
       const limits = CHALLENGE_CONFIG[difficulty];
       setMoveCount(limits.moveLimit);
@@ -135,7 +130,6 @@ function App() {
       setMoveCount(0);
       setTimer(0);
     }
-
     setPoints(0);
     setGameState('playing');
   };
@@ -149,7 +143,7 @@ function App() {
   };
 
   const handleClearAllData = () => {
-    localStorage.removeItem('allPlayersRecords');
+    localStorage.removeItem('memoryGameRecords'); // Limpa os recordes globais
     localStorage.removeItem('memoryGameHistory');
     setPersonalBest(null);
     setLastGameResult(null);
@@ -203,7 +197,6 @@ function App() {
         <StatsScreen
           onBackToMenu={backToMenu}
           lastGame={lastGameResult}
-          currentPlayerName={playerName}
           onClearData={handleClearAllData}
         />
       )}

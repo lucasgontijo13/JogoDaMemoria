@@ -1,29 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import './StatsScreen.css';
 
-// Função auxiliar para formatar o tempo
 const formatTime = (totalSeconds) => {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData }) {
+function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
   const [records, setRecords] = useState([]);
   const [history, setHistory] = useState([]);
   const [isViewingHistory, setIsViewingHistory] = useState(false);
 
   useEffect(() => {
-    const allPlayersRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
-    let allRecords = [];
-    for (const playerName in allPlayersRecords) {
-        allRecords = allRecords.concat(Object.values(allPlayersRecords[playerName]));
-    }
-    setRecords(allRecords);
+    const globalRecords = JSON.parse(localStorage.getItem('memoryGameRecords')) || {};
+    setRecords(Object.values(globalRecords));
 
     const savedHistory = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
     setHistory(savedHistory);
-  }, [currentPlayerName]);
+  }, []);
 
   const handleClearData = () => {
     if (window.confirm('Tem certeza que deseja apagar TODOS os dados salvos no navegador (histórico e recordes)?')) {
@@ -35,8 +30,6 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
 
   const hasData = records.length > 0 || history.length > 0;
 
-  // --- LÓGICA CORRIGIDA ---
-  // Se não houver dados, mostra a mensagem para jogar.
   if (!hasData) {
     return (
       <div className="stats-container">
@@ -51,12 +44,11 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
     );
   }
 
-
   if (isViewingHistory) {
     return (
       <div className="stats-container">
         <h1 className="stats-title">Histórico de Partidas</h1>
-        <div className="stats-table-wrapper">
+        <div className="stats-table-wrapper history-table">
           <table className="stats-table">
             <thead>
               <tr>
@@ -91,7 +83,6 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
     );
   }
 
-  // Visualização principal (Resumo e Recordes)
   return (
     <div className="stats-container">
       <h1 className="stats-title">Estatísticas</h1>
@@ -115,9 +106,9 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
       )}
 
       <div className="records-section">
-        <h2 className="section-title">Recordes</h2>
+        <h2 className="section-title">Recordes Globais</h2>
         {records.length > 0 ? (
-          <div className="stats-table-wrapper">
+          <div className="stats-table-wrapper records-table">
             <table className="stats-table">
               <thead>
                 <tr>
@@ -130,7 +121,7 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
                 </tr>
               </thead>
               <tbody>
-                {records.map((record, index) => (
+                {records.sort((a, b) => a.theme.localeCompare(b.theme) || a.difficulty.localeCompare(b.difficulty)).map((record, index) => (
                   <tr key={index}>
                     <td>{record.playerName}</td>
                     <td>{record.theme}</td>
@@ -144,7 +135,6 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
             </table>
           </div>
         ) : (
-          // Esta mensagem agora só aparece se houver histórico mas não houver recordes
           <p className="no-stats-message">Nenhum recorde registrado.</p>
         )}
       </div>
@@ -158,7 +148,7 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName, onClearData })
             Ver Histórico
           </button>
         )}
-        {(history.length > 0 || records.length > 0) && (
+        {hasData && (
           <button className="btn btn-yellow" onClick={handleClearData}>
             Limpar Dados
           </button>

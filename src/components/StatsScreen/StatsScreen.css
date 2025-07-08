@@ -24,11 +24,33 @@
   border: 1px solid #0ff;
 }
 
+/* --- AJUSTE PARA ROLAGEM --- */
+/* Aplica a altura máxima e a rolagem à tabela de recordes */
+.stats-table-wrapper.records-table {
+  /* O valor foi ajustado para forçar a rolagem após a 3ª linha de dados */
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Aplica a altura máxima e a rolagem à tabela de histórico também */
+.stats-table-wrapper.history-table {
+    max-height: 400px;
+    overflow-y: auto;
+}
+/* --- FIM DO AJUSTE --- */
+
 .stats-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.7rem;
   table-layout: fixed;
+}
+
+.stats-table thead th {
+  background-color: #1B263B;
+  color: #f0f;
+  top: 0;
+  position: sticky; /* Faz o cabeçalho ficar fixo ao rolar */
 }
 
 .stats-table th,
@@ -39,13 +61,6 @@
   word-wrap: break-word;
 }
 
-.stats-table thead th {
-  background-color: #1B263B;
-  color: #f0f;
-  top: 0;
-}
-
-
 .stats-table tbody tr:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.2);
 }
@@ -54,9 +69,11 @@
   background-color: rgba(255, 0, 255, 0.2);
 }
 
-
 .summary-section, .records-section {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .section-title {
@@ -67,21 +84,21 @@
 }
 
 .summary-table-wrapper {
-  max-width: 500px; /* Limita a largura da tabela de resumo */
-  margin: 0 auto;   /* Centraliza a tabela */
+  max-width: 500px;
+  width: 100%;
   background-color: #1B263B;
   border-radius: 8px;
-  border: 1px solid #0ff; /* Adiciona a mesma borda das outras tabelas */
+  border: 1px solid #0ff;
 }
 
 .summary-table td {
   font-size: 0.9rem;
   padding: 0.6rem 1.2rem;
-  border-bottom: 1px solid #2c3a52; /* Borda interna sutil */
+  border-bottom: 1px solid #2c3a52;
 }
 
 .summary-table tr:last-child td {
-  border-bottom: none; /* Remove a borda da última linha */
+  border-bottom: none;
 }
 
 .summary-table td:first-child {
@@ -100,38 +117,45 @@
   font-size: 1.2rem;
   color: #fff;
   margin: 2rem 0;
+  text-align: center;
 }
 
 .stats-buttons {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.btn {
-  padding: 1rem 1.5rem;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  background-color: transparent;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  border: 2px solid;
+
+::-webkit-scrollbar {
+width: 8px; /* Largura da barra de rolagem */
+}
+::-webkit-scrollbar-track {
+background-color: #1B263B; /* Cor do fundo da "trilha" da barra de rolagem */
+border-radius: 4px;
 }
 
-.btn-magenta {
-  border-color: #f0f;
-  color: #f0f;
+::-webkit-scrollbar-thumb {
+background-color: #0ff; /* Cor do "polegar" (a parte que você arrasta) /
+border-radius: 4px;
+border: 1px solid #000; / Adiciona uma borda sutil para destacar */
 }
 
-.btn-yellow {
-  border-color: #ff0;
-  color: #ff0;
+::-webkit-scrollbar-thumb:hover {
+background-color: #00ffff; /* Cor ao passar o mouse */
 }
 
-.btn:hover {
-  color: #000;
+::-webkit-scrollbar-thumb:active {
+background-color: #00b3b3; /* Cor ao clicar */
 }
 
-.btn-magenta:hover { background-color: #f0f; }
-.btn-yellow:hover { background-color: #ff0; }
+/* Estilos para Firefox /
+/ Define a cor do polegar e da trilha */
+.stats-table-wrapper.records-table {
+scrollbar-color: #0ff #1B263B;
+scrollbar-width: thin; 
+max-height: 150px;
+overflow-y: auto;
+}
