@@ -1,72 +1,132 @@
 import React, { useState, useEffect } from 'react';
 import './StatsScreen.css';
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import ConfirmModal from '../ConfirmModal/ConfirmModal'; // Importa o novo componente
 
-// Função auxiliar para formatar o tempo
 const formatTime = (totalSeconds) => {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
-  const [view, setView] = useState('personal'); 
-  const [records, setRecords] = useState([]);
+// Componente reutilizável para exibir a tabela de recordes
+const RecordsDisplay = ({ title, records, onBack }) => (
+    <div className="stats-container">
+        <h1 className="stats-title">{title}</h1>
+        {records.length > 0 ? (
+            <div className="stats-table-wrapper records-table">
+                <table className="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Jogador</th>
+                            <th>Tema</th>
+                            <th>Dificuldade</th>
+                            <th>Desafio</th>
+                            <th>Jogadas</th>
+                            <th>Tempo</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {records.sort((a, b) => a.theme.localeCompare(b.theme) || a.difficulty.localeCompare(b.difficulty)).map((record, index) => (
+                            <tr key={index}>
+                                <td>{record.playerName}</td>
+                                <td>{record.theme}</td>
+                                <td>{record.difficulty}</td>
+                                <td>
+                                    <div className={`challenge-indicator ${record.gameMode === 'challenge' ? 'active' : ''}`}></div>
+                                </td>
+                                <td>{record.moveCount}</td>
+                                <td>{formatTime(record.timer)}</td>
+                                <td>{new Date(record.date).toLocaleDateString('pt-BR')}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        ) : (
+            <p className="no-stats-message">Nenhum recorde registrado para este modo.</p>
+        )}
+        <div className="stats-buttons">
+            <button className="btn btn-cyan" onClick={onBack}>
+                Voltar
+            </button>
+        </div>
+    </div>
+);
+
+
+function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
+  const [classicRecords, setClassicRecords] = useState([]);
+  const [challengeRecords, setChallengeRecords] = useState([]);
   const [history, setHistory] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [view, setView] = useState('summary'); // Mantém o estado da 'main'
+  const [isModalOpen, setIsModalOpen] = useState(false); // Mantém o estado da 'Iasmin'
 
   useEffect(() => {
-    const allPlayersRecords = JSON.parse(localStorage.getItem('allPlayersRecords')) || {};
+    const classic = Object.values(JSON.parse(localStorage.getItem('memoryGameRecords')) || {});
+    setClassicRecords(classic);
 
-    if (view === 'personal') {
-      const personalRecords = allPlayersRecords[currentPlayerName] || {};
-      setRecords(Object.values(personalRecords));
-    } else if (view === 'overall') {
-      const overallRecords = {};
-      for (const playerName in allPlayersRecords) {
-        for (const gameModeKey in allPlayersRecords[playerName]) {
-          const record = allPlayersRecords[playerName][gameModeKey];
-          const existingOverall = overallRecords[gameModeKey];
-          if (!existingOverall || record.moveCount < existingOverall.moveCount || (record.moveCount === existingOverall.moveCount && record.timer < existingOverall.timer)) {
-            overallRecords[gameModeKey] = record;
-          }
-        }
-      }
-      setRecords(Object.values(overallRecords));
-    }
+    const challenge = Object.values(JSON.parse(localStorage.getItem('memoryGameChallengeRecords')) || {});
+    setChallengeRecords(challenge);
 
     const savedHistory = JSON.parse(localStorage.getItem('memoryGameHistory')) || [];
     setHistory(savedHistory);
-  }, [view, currentPlayerName]);
+  }, []);
 
+  // Função da 'Iasmin' para abrir o modal
   const handleClearDataClick = () => {
     setIsModalOpen(true);
   };
 
+  // Função da 'Iasmin' para confirmar a ação, adaptada para usar a lógica da 'main'
   const confirmClearData = () => {
-    localStorage.removeItem('memoryGameRecords');
-    localStorage.removeItem('memoryGameHistory');
-    setRecords([]);
+    onClearData(); // Chama a função do componente pai
+    setClassicRecords([]);
+    setChallengeRecords([]);
     setHistory([]);
-    setIsModalOpen(false); // Fecha o modal após confirmar
+    setIsModalOpen(false); // Fecha o modal
   };
+
+  const hasData = classicRecords.length > 0 || challengeRecords.length > 0 || history.length > 0;
+
+  if (!hasData) {
+    return (
+      <div className="stats-container">
+        <h1 className="stats-title">Estatísticas</h1>
+        <p className="no-stats-message">Jogue pelo menos uma partida para ver suas estatísticas!</p>
+        <div className="stats-buttons">
+          <button className="btn btn-magenta" onClick={onBackToMenu}>
+            Voltar ao Menu
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Mantém a lógica de visualização da 'main'
+  if (view === 'classic_records') {
+    return <RecordsDisplay title="Recordes Gerais" records={classicRecords} onBack={() => setView('summary')} />;
+  }
+
+  if (view === 'challenge_records') {
+    return <RecordsDisplay title="Recordes Desafio" records={challengeRecords} onBack={() => setView('summary')} />;
+  }
 
   if (view === 'history') {
     return (
       <div className="stats-container">
-        <h1 className="stats-title">
-          {view === 'personal' ? 'Meus Recordes' : 'Recordes Gerais'}
-        </h1>
-        <div className="stats-table-wrapper">
+        <h1 className="stats-title">Histórico de Partidas</h1>
+        <div className="stats-table-wrapper history-table">
           <table className="stats-table">
             <thead>
               <tr>
                 <th>Jogador</th>
                 <th>Tema</th>
                 <th>Dificuldade</th>
+                <th>Desafio</th>
                 <th>Jogadas</th>
                 <th>Tempo</th>
-                <th>Data</th>
+                <th>Resultado</th>
               </tr>
             </thead>
             <tbody>
@@ -75,62 +135,52 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
                   <td>{game.playerName}</td>
                   <td>{game.theme}</td>
                   <td>{game.difficulty}</td>
+                  <td>
+                    <div className={`challenge-indicator ${game.gameMode === 'challenge' ? 'active' : ''}`}></div>
+                  </td>
                   <td>{game.moveCount}</td>
                   <td>{formatTime(game.timer)}</td>
-                  <td>{new Date(game.date).toLocaleDateString('pt-BR')}</td>
+                  <td>{game.status === 'win' ? 'Vitória' : 'Derrota'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <div className="stats-buttons">
-          <button className="btn btn-magenta" onClick={() => setView('summary')}>
-            Voltar para Recordes
+          <button className="btn btn-cyan" onClick={() => setView('summary')}>
+            Voltar
           </button>
         </div>
       </div>
     );
   }
 
+  // Mantém a estrutura de tela principal da 'main' e insere o modal da 'Iasmin'
   return (
     <>
       <ConfirmModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onConfirm={confirmClearData}
-          message="Tem certeza que deseja apagar TODOS os dados (histórico e recordes)?"
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmClearData}
+        message="Tem certeza que deseja apagar TODOS os dados (histórico e recordes)?"
       />
 
       <div className="stats-container">
-        <h1 className="stats-title">Resumo e Recordes</h1>
+        <h1 className="stats-title">Estatísticas</h1>
 
         {lastGame && (
           <div className="summary-section">
             <h2 className="section-title">Última Partida</h2>
-            
             <div className="stats-table-wrapper summary-table-wrapper">
               <table className="stats-table summary-table">
                 <tbody>
-                  <tr>
-                    <td>Jogador:</td>
-                    <td>{lastGame.playerName}</td>
-                  </tr>
-                  <tr>
-                    <td>Tema:</td>
-                    <td>{lastGame.theme}</td>
-                  </tr>
-                  <tr>
-                    <td>Dificuldade:</td>
-                    <td>{lastGame.difficulty}</td>
-                  </tr>
-                  <tr>
-                    <td>Jogadas:</td>
-                    <td>{lastGame.moveCount}</td>
-                  </tr>
-                  <tr>
-                    <td>Tempo:</td>
-                    <td>{formatTime(lastGame.timer)}</td>
-                  </tr>
+                  <tr><td>Jogador:</td><td>{lastGame.playerName}</td></tr>
+                  <tr><td>Tema:</td><td>{lastGame.theme}</td></tr>
+                  <tr><td>Dificuldade:</td><td>{lastGame.difficulty}</td></tr>
+                  <tr><td>Desafio:</td><td><div className={`challenge-indicator ${lastGame.gameMode === 'challenge' ? 'active' : ''}`}></div></td></tr>
+                  <tr><td>Jogadas:</td><td>{lastGame.moveCount}</td></tr>
+                  <tr><td>Tempo:</td><td>{formatTime(lastGame.timer)}</td></tr>
+                  <tr><td>Resultado:</td><td>{lastGame.status === 'win' ? 'Vitória' : 'Derrota'}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -138,29 +188,30 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
         )}
 
         <div className="records-section">
-          <h2 className="section-title">
-            {view === 'personal' ? 'Meus Recordes' : 'Recordes Gerais'}
-          </h2>
-
-          {records.length > 0 ? (
-            <div className="stats-table-wrapper">
+          <h2 className="section-title">Recordes Gerais</h2>
+          {classicRecords.length > 0 ? (
+            <div className="stats-table-wrapper records-table">
               <table className="stats-table">
                 <thead>
                   <tr>
                     <th>Jogador</th>
                     <th>Tema</th>
                     <th>Dificuldade</th>
+                    <th>Desafio</th>
                     <th>Jogadas</th>
                     <th>Tempo</th>
                     <th>Data</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {records.map((record, index) => (
+                  {classicRecords.sort((a, b) => a.theme.localeCompare(b.theme) || a.difficulty.localeCompare(b.difficulty)).map((record, index) => (
                     <tr key={index}>
                       <td>{record.playerName}</td>
                       <td>{record.theme}</td>
                       <td>{record.difficulty}</td>
+                      <td>
+                        <div className={`challenge-indicator ${record.gameMode === 'challenge' ? 'active' : ''}`}></div>
+                      </td>
                       <td>{record.moveCount}</td>
                       <td>{formatTime(record.timer)}</td>
                       <td>{new Date(record.date).toLocaleDateString('pt-BR')}</td>
@@ -170,7 +221,7 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
               </table>
             </div>
           ) : (
-            <p className="no-stats-message">Nenhum recorde registrado para esta visualização.</p>
+            <p className="no-stats-message">Nenhum recorde no modo geral.</p>
           )}
         </div>
 
@@ -178,17 +229,13 @@ function StatsScreen({ onBackToMenu, lastGame, currentPlayerName }) {
           <button className="btn btn-magenta" onClick={onBackToMenu}>
             Voltar ao Menu
           </button>
-          {view === 'personal' ? (
-            <button className="btn btn-cyan" onClick={() => setView('overall')}>Ver Recordes Gerais</button>
-          ) : (
-            <button className="btn btn-cyan" onClick={() => setView('personal')}>Ver Meus Recordes</button>
-          )}
-          {history.length > 0 && (
-            <button className="btn btn-cyan" onClick={() => setView('history')}>
-              Ver Histórico
-            </button>
-          )}
-          {(history.length > 0 || records.length > 0) && (
+          <button className="btn btn-cyan" onClick={() => setView('history')}>
+            Ver Histórico
+          </button>
+          <button className="btn btn-green" onClick={() => setView('challenge_records')}>
+            Recordes Desafio
+          </button>
+          {hasData && (
             <button className="btn btn-yellow" onClick={handleClearDataClick}>
               Limpar Dados
             </button>

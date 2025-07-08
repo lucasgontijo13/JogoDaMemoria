@@ -8,19 +8,28 @@ const formatTime = (totalSeconds) => {
 };
 
 function GameOverScreen({
-    playerName,
-    points,
-    timer,
-    moveCount,
+    gameResult,
     onBackToMenu,
     onShowStats,
-    personalBest
+    onRestart, // Recebe a nova prop
+    personalBest,
 }) {
+    if (!gameResult) return null;
+
+    const { playerName, points, timer, moveCount, status } = gameResult;
+    const isWin = status === 'win';
+
+    const showPreviousBest = isWin && personalBest && personalBest.date !== gameResult.date;
+
     return (
-        <div className="game-over-container">
-            <h1 className="game-over-title">FIM DE JOGO!</h1>
+        <div className={`game-over-container ${!isWin ? 'loss-style' : ''}`}>
+            <h1 className="game-over-title">{isWin ? "FIM DE JOGO!" : "GAME OVER"}</h1>
             <p className="player-name-congrats">
-                Parabéns, <span className="highlight">{playerName}</span>!
+                {isWin ? (
+                    <>Parabéns, <span className="highlight">{playerName}</span>!</>
+                ) : (
+                    <>Não foi desta vez, <span className="highlight">{playerName}</span>!</>
+                )}
             </p>
 
            <div className="stats-summary">
@@ -37,7 +46,8 @@ function GameOverScreen({
                     <span className="stat-value highlight">{moveCount}</span>
                 </div>
             </div>
-            {personalBest &&(
+
+            {showPreviousBest && (
                 <div className="personal-best-section">
                     <p>Seu recorde pessoal neste modo:</p>
                     <p>
@@ -49,6 +59,10 @@ function GameOverScreen({
             <div className="game-over-buttons">
                 <button className="btn btn-magenta" onClick={onBackToMenu}>
                     Menu inicial
+                </button>
+                {/* Novo botão para jogar novamente */}
+                <button className="btn btn-green" onClick={onRestart}>
+                    Jogar Novamente
                 </button>
                 <button className="btn btn-cyan" onClick={onShowStats}>
                     Estatisticas

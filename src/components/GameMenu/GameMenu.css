@@ -18,8 +18,8 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-    text-shadow: 
-        0 0 5px rgba(255, 0, 255, 0.8), 
+    text-shadow:
+        0 0 5px rgba(255, 0, 255, 0.8),
         0 0 10px rgba(0, 255, 255, 0.8);
 }
 
@@ -112,11 +112,22 @@
     box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
 }
 
+/* --- CORREÇÃO APLICADA AQUI --- */
+/* Estilo quando o botão de desafio está ATIVO ou com o mouse por cima */
 .challenge-btn:hover,
 .challenge-btn.active {
     background-color: #00ff00;
     color: #000;
 }
+
+/* Garante que o botão de desafio, ao ser focado mas não estando ativo,
+   mantenha a aparência correta e não fique escuro. */
+.challenge-btn:focus:not(.active) {
+    background-color: transparent;
+    color: #00ff00;
+}
+/* --- FIM DA CORREÇÃO --- */
+
 
 .stats-btn {
     width: 100%;
@@ -154,8 +165,6 @@
     80% { transform: translate(0, 0); }
 }
 
-/* Adicione este código ao final de GameMenu.css */
-
 /* Estilo para o botão ATIVO (selecionado) */
 .btn.active {
     color: #000;
@@ -172,4 +181,3 @@
 .btn-yellow.active {
     background-color: #ff0;
 }
-
