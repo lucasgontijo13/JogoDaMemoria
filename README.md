@@ -8,7 +8,7 @@ Os ícones utilizados neste projeto foram criados pelos seguintes artistas e dis
 * **YardenG:** [Ícones de Robô](https://www.flaticon.com/free-icons/robot), [Ícones Pixelados](https://www.flaticon.com/free-icons/pixelated) e [Ícones de Diabo](https://www.flaticon.com/free-icons/devil)
 * **Miguel C Balandrano:** [Ícones Pixelados](https://www.flaticon.com/free-icons/pixelated)
 * **frelayasia:** [Ícones de Coração](https://www.flaticon.com/free-icons/heart)
-
+* **shmai:** [Ícones de Controle de jogo](https://www.flaticon.com/free-icons/game-controller)
 Agradecemos a esses criadores por disponibilizarem seu trabalho.
  
  

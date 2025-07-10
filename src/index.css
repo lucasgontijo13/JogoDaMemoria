@@ -1,4 +1,4 @@
-/* Em src/index.css */
+/*index.css */
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +10,6 @@ body {
     font-family: 'Press Start 2P', cursive;
     color: #fff;
 
-    /* Centraliza o conteúdo do App.js */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +17,7 @@ body {
     overflow: hidden;
 }
 
-/* Efeito de Scanlines (opcional, mas legal de manter global) */
+/* Efeito de Scanlines  */
 body::after {
     content: "";
     position: absolute;

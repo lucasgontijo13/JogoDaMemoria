@@ -11,7 +11,7 @@ function GameOverScreen({
     gameResult,
     onBackToMenu,
     onShowStats,
-    onRestart, // Recebe a nova prop
+    onRestart, 
     personalBest,
 }) {
     if (!gameResult) return null;
