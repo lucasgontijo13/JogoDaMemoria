@@ -8,8 +8,7 @@ const formatTime = (totalSeconds) => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-// Componente reutilizável para exibir a tabela de recordes
-// Adicionada a prop 'tableClassName' para permitir estilos diferentes
+
 const RecordsDisplay = ({ title, records, onBack, tableClassName }) => (
     <div className="stats-container">
         <h1 className="stats-title">{title}</h1>
@@ -106,7 +105,7 @@ function StatsScreen({ onBackToMenu, lastGame, onClearData }) {
     return <RecordsDisplay title="Recordes Gerais" records={classicRecords} onBack={() => setView('summary')} />;
   }
   
-  // Passa a nova classe CSS para a tabela de recordes de desafio
+ 
   if (view === 'challenge_records') {
     return <RecordsDisplay title="Recordes Desafio" records={challengeRecords} onBack={() => setView('summary')} tableClassName="challenge-records-table" />;
   }

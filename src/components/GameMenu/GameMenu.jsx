@@ -11,7 +11,7 @@ function GameMenu({
   onStartGame,
   gameMode,
   setGameMode,
-  onShowStats // 1. Recebe a nova prop
+  onShowStats 
 }) {
 
   const handlePlay = () => {
@@ -30,7 +30,7 @@ function GameMenu({
         onChange={(e) => setPlayerName(e.target.value)}
       />
 
-      {/* 2. Botão de Desafio movido para fora e acima do grid */}
+  
       <button
         onClick={() => setGameMode(gameMode === 'classic' ? 'challenge' : 'classic')}
         className={`btn challenge-btn ${gameMode === 'challenge' ? 'active' : ''}`}
@@ -38,7 +38,7 @@ function GameMenu({
         Modo Desafio: {gameMode === 'challenge' ? 'ATIVADO' : 'DESATIVADO'}
       </button>
 
-      {/* Grid apenas para as opções de dificuldade e tema */}
+
       <div className="options-grid">
         <button
           onClick={() => setDifficulty('Facil')}
@@ -79,12 +79,10 @@ function GameMenu({
         </button>
       </div>
       
-      {/* Botões de ação principais abaixo do grid */}
       <button onClick={handlePlay} className="btn play-btn btn-yellow">
         Jogar
       </button>
 
-      {/* 3. Novo botão para Estatísticas */}
       <button onClick={onShowStats} className="btn stats-btn">
         Estatisticas
       </button>

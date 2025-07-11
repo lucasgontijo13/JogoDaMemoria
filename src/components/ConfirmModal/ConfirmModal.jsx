@@ -10,7 +10,6 @@ function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
   return (
     // O fundo escurecido
     <div className="modal-overlay">
-      {/* A caixa de conteúdo do modal */}
       <div className="modal-content">
         <p className="modal-message">{message}</p>
         <div className="modal-buttons">

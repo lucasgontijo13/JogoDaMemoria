@@ -101,8 +101,7 @@
   border: 2px solid;
 }
 
-/* --- CORREÇÃO APLICADA AQUI --- */
-/* A regra de crescimento agora é específica para os botões dentro da tela de game over */
+
 .game-over-buttons .btn {
     flex-grow: 1;
     max-width: fit-content;

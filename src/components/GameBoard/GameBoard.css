@@ -19,11 +19,9 @@
   margin-bottom: 30px;
 }
 
-/* VOLTAMOS PARA O CSS GRID */
 .game-board {
   display: grid;
   gap: 12px;
-  /* Centraliza a grade dentro do container */
   justify-content: center;
 }
 

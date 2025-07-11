@@ -1,6 +1,6 @@
 /* O container define o tamanho e a perspectiva 3D */
 .card-container {
-  width: 75px;  /* Ajustei um pouco o tamanho para caber melhor */
+  width: 75px;  
   height: 75px;
   perspective: 1000px;
   cursor: pointer;
@@ -8,14 +8,13 @@
   position: relative;
 }
 
-/* O elemento que de fato vai girar */
+/* O elemento que vai girar */
 .card-inner {
   position: relative;
   width: 100%;
   height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
-
   z-index: 2;
 }
 
@@ -37,15 +36,15 @@
   border-radius: 5px;
 }
 
-/* VERSO DA CARTA:  */
+
 .card-face.card-back {
   background-color: #1B263B;
   border: 2px solid #00FFFF;
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-  transform: rotateY(0deg); /* Começa virado para o jogador */
+  transform: rotateY(0deg); 
 }
 
-/* FRENTE DA CARTA: Um fundo claro para a imagem se destacar */
+
 .card-face.card-front {
   background-color: #FFFF00; 
   transform: rotateY(180deg);
@@ -66,10 +65,10 @@
   right: 0;
   bottom: 0;
   border-radius: 10px;
-  background: #FFFF00; /* A cor do brilho */
+  background: #FFFF00; 
   filter: blur(20px);  /* O efeito de desfoque que cria o brilho */
-  opacity: 0;          /* Começa invisível */
-  z-index: 1;          /* Fica atrás da carta (que tem z-index: 2) */
+  opacity: 0;          
+  z-index: 1;         
   transition: opacity 0.5s ease-in-out;
 
 }

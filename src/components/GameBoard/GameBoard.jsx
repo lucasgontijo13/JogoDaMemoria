@@ -77,7 +77,7 @@ function GameBoard({ difficulty, theme, onBackToMenu, moveCount, setMoveCount, s
         if (allMatched) {
             setIsGameOverSent(true);
             setTimeout(() => onGameOver('win'), 1200);
-            return; // Encerra o useEffect aqui
+            return; 
         }
 
         setTimeout(() => {

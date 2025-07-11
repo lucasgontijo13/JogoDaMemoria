@@ -194,7 +194,7 @@ function App() {
           gameResult={lastGameResult}
           onBackToMenu={backToMenu}
           onShowStats={showStats}
-          onRestart={startGame} // Passa a função startGame como onRestart
+          onRestart={startGame} 
           personalBest={personalBest}
         />
       ) : (

@@ -40,7 +40,7 @@ function GameInfoBar({
         <div className={`stats-item ${movesClass}`}>
           <span className="info-label">JOGADAS: </span>
           <span className="info-value">
-            {/* 4. Exibe as jogadas de forma diferente para cada modo */}
+     
             {isChallenge ? `${moveCount}/${moveLimit}` : moveCount}
           </span>
         </div>

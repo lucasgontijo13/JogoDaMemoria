@@ -111,21 +111,18 @@
     box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
 }
 
-/* --- CORREÇÃO APLICADA AQUI --- */
-/* Estilo quando o botão de desafio está ATIVO ou com o mouse por cima */
 .challenge-btn:hover,
 .challenge-btn.active {
     background-color: #00ff00;
     color: #000;
 }
 
-/* Garante que o botão de desafio, ao ser focado mas não estando ativo,
-   mantenha a aparência correta e não fique escuro. */
+
 .challenge-btn:focus:not(.active) {
     background-color: transparent;
     color: #00ff00;
 }
-/* --- FIM DA CORREÇÃO --- */
+
 
 
 .stats-btn {
@@ -164,7 +161,7 @@
     80% { transform: translate(0, 0); }
 }
 
-/* Estilo para o botão ATIVO (selecionado) */
+
 .btn.active {
     color: #000;
 }
